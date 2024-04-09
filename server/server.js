@@ -7,6 +7,7 @@ import bodyParser from "body-parser";
 import xss from "xss-clean";
 import MongoSanitize from "express-mongo-sanitize";
 import dbConnection from "./dbConfig/dbConnection.js";
+import router from "./routes/index.js";
 
 dotenv.config();
 
@@ -21,6 +22,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(MongoSanitize());
 app.use(express.json({ limit: "15mb" }));
 app.use(morgan("dev"));
+// app.use("api/v1/auth", auth);
+
+app.use(router);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

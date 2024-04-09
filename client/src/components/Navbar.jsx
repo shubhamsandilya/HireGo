@@ -110,7 +110,7 @@ const Navbar = () => {
         <nav className="container mx-auto flex items-center justify-between p-5">
           <div>
             <Link to="/" className="text-blue-600 font-bold text-xl">
-              Job<span className="text-[#1677cccb]">Finder</span>
+              Hire<span className="text-[#1677cccb]">Go</span>
             </Link>
           </div>
 

@@ -10,8 +10,9 @@ import {
   UploadJobs,
   UserProfile,
 } from "./pages";
+import { useSelector } from "./redux/store";
 function Layout() {
-  const user = true;
+  const { user } = useSelector((state) => state.user);
   const location = useLocation();
   return user ? (
     <Outlet />
@@ -20,7 +21,7 @@ function Layout() {
   );
 }
 function App() {
-  const user = {};
+  const { user } = useSelector((state) => state.user);
   return (
     <main>
       <Navbar />

@@ -32,14 +32,15 @@ export const signIn = async (req, res, next) => {
   const { email, password } = req?.body;
   try {
     if (!email || !password) throw new Error("Provide user");
-    const user = await User.findOne({ email }).select("+password");
+    const user = await Users.findOne({ email }).select("+password");
     if (!user) {
       next("Please register first");
       return;
     }
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      next("Invalid email or password");
+      // next();
+      throw new Error("Invalid email or password");
       return;
     }
     user.password = undefined;

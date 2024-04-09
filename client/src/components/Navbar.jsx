@@ -16,7 +16,7 @@ function MenuList({ user, onClick }) {
     <div>
       <Menu as="div" className="inline-block text-left">
         <div className="flex">
-          <Menu.Button className="inline-flex gap-2 w-full rounded-md bg-white md:px-4 py-2 text-sm font-medium text-slate-700 hover:bg-opacity-20 ">
+          <Menu.Button className="inline-flex gap-2 w-full rounded-md  md:px-4 py-2 text-sm font-medium text-slate-700 hover:bg-white ">
             <div className="leading[80px] flex flex-col items-start">
               <p className="text-sm font-semibold ">
                 {user?.firstName ?? user?.name}

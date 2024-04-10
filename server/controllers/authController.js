@@ -40,7 +40,7 @@ export const signIn = async (req, res, next) => {
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       // next();
-      throw new Error("Invalid email or password");
+      next("Invalid email or password");
       return;
     }
     user.password = undefined;
@@ -48,8 +48,8 @@ export const signIn = async (req, res, next) => {
     res.status(201).send({
       success: true,
       message: "login successfully",
-      token,
       user,
+      token,
     });
   } catch (error) {
     next(error);

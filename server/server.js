@@ -9,6 +9,7 @@ import MongoSanitize from "express-mongo-sanitize";
 import dbConnection from "./dbConfig/dbConnection.js";
 import router from "./routes/index.js";
 import authRoute from "./routes/authRoute.js";
+import errorMiddleware from "./middleware/error.js";
 
 dotenv.config();
 
@@ -26,7 +27,7 @@ app.use(morgan("dev"));
 // app.use("api/v1/auth", authRoute);
 
 app.use(router);
-
+app.use(errorMiddleware);
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });

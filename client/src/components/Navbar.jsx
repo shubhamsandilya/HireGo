@@ -7,10 +7,15 @@ import { AiOutlineClose, AiOutlineLogout } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import CustomButton from "./CustomButton";
 import { users } from "../utils/data";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { Logout } from "../redux/userSlice";
 
 function MenuList({ user, onClick }) {
-  const handleLogout = () => {};
+  const dispatch = useDispatch();
+  const handleLogout = () => {
+    dispatch(Logout());
+    window.location.replace("/");
+  };
 
   return (
     <div>
@@ -19,7 +24,7 @@ function MenuList({ user, onClick }) {
           <Menu.Button className="inline-flex gap-2 w-full rounded-md  md:px-4 py-2 text-sm font-medium text-slate-700 hover:bg-white ">
             <div className="leading[80px] flex flex-col items-start">
               <p className="text-sm font-semibold ">
-                {user?.firstName ?? user?.name}
+                {user?.user?.firstName ?? user?.user?.name}
               </p>
               <span className="text-sm text-blue-600 ">
                 {user?.jobTitle ?? user?.email}
@@ -27,7 +32,7 @@ function MenuList({ user, onClick }) {
             </div>
 
             <img
-              src={user?.profileUrl}
+              src={user?.user?.profileUrl}
               alt="user profile"
               className="w-10 h-10 rounded-full object-cover "
             />
@@ -53,7 +58,9 @@ function MenuList({ user, onClick }) {
                 {({ active }) => (
                   <Link
                     to={`${
-                      user?.accountType ? "user-profile" : "company-profile"
+                      user?.user?.accountType
+                        ? "user-profile"
+                        : "company-profile"
                     }`}
                     className={`${
                       active ? "bg-blue-500 text-white" : "text-gray-900"
@@ -66,7 +73,9 @@ function MenuList({ user, onClick }) {
                       } mr-2 h-5 w-5  `}
                       aria-hidden="true"
                     />
-                    {user?.accountType ? "User Profile" : "Company Profile"}
+                    {user?.user?.accountType
+                      ? "User Profile"
+                      : "Company Profile"}
                   </Link>
                 )}
               </Menu.Item>
@@ -99,7 +108,7 @@ function MenuList({ user, onClick }) {
 const Navbar = () => {
   const user = useSelector((state) => state.user);
   const [isOpen, setIsOpen] = useState(false);
-
+  // console.log(user?.user?.token);
   const handleCloseNavbar = () => {
     setIsOpen((prev) => !prev);
   };
@@ -130,7 +139,7 @@ const Navbar = () => {
           </ul>
 
           <div className="hidden lg:block">
-            {!user?.token ? (
+            {!user?.user?.token ? (
               <Link to="/user-auth">
                 <CustomButton
                   title="Sign In"
@@ -177,7 +186,7 @@ const Navbar = () => {
           </Link>
 
           <div className="w-full py-10">
-            {!user?.token ? (
+            {!user?.user?.token ? (
               <a href="/user-auth">
                 <CustomButton
                   title="Sign In"

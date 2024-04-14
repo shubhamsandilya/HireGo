@@ -16,6 +16,7 @@ export const apiRequest = async ({ url, token, data, method }) => {
         Authorization: token ? `Bearer ${token}` : "",
       },
     });
+    return result?.data;
   } catch (error) {
     const err = error.response.data;
     console.log(error);
@@ -26,7 +27,7 @@ export const apiRequest = async ({ url, token, data, method }) => {
 export const handleFileUpload = async (uploadFile) => {
   const formData = new FormData();
   formData.append("file", uploadFile);
-  formData.append("upload_preset", "jonfider ");
+  formData.append("upload_preset", "hirego");
   try {
     const response = await axios.post(
       "https://api.cloudinary.com/v1_1/cloudname,image/upload",

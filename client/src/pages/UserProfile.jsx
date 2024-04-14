@@ -202,6 +202,7 @@ const UserForm = ({ open, setOpen }) => {
 
 const UserProfile = () => {
   const { user } = useSelector((state) => state.user);
+  console.log(user);
   const [open, setOpen] = useState(false);
   const userInfo = user;
 

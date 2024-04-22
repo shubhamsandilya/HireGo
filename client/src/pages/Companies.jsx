@@ -7,14 +7,14 @@ import {
   ListBox,
   Loading,
 } from "../components";
-import { companies } from "../utils/data";
+// import { companies } from "../utils/data";
 import { apiRequest, updateURL } from "../utils";
 
 const Companies = () => {
   const [page, setPage] = useState(1);
   const [numPage, setNumPage] = useState(1);
   const [recordsCount, setRecordsCount] = useState(0);
-  const [data, setData] = useState(companies ?? []);
+  const [data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [cmpLocation, setCmpLocation] = useState("");
   const [sort, setSort] = useState("Newest");
@@ -51,7 +51,10 @@ const Companies = () => {
   useEffect(() => {
     fetchCompanies();
   }, [page, sort]);
-  const handleSearchSubmit = () => {};
+  const handleSearchSubmit = async (e) => {
+    e.preventDefault();
+    fetchCompanies();
+  };
   const handleShowMore = () => {};
 
   return (
@@ -62,7 +65,7 @@ const Companies = () => {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         location={cmpLocation}
-        setLocation={setSearchQuery}
+        setLocation={setCmpLocation}
       />
 
       <div className="container mx-auto flex flex-col gap-5 2xl:gap-10 px-5 py-6 bg-[#f7fdfd]">

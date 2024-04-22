@@ -7,6 +7,7 @@ import { HeroImage } from "../assets";
 
 const SearchInput = ({ placeholder, icon, value, setValue, styles }) => {
   const handleChange = (e) => {
+    console.log("first");
     setValue(e.target.value);
   };
 

@@ -3,7 +3,6 @@ import moment from "moment";
 import { Link } from "react-router-dom";
 
 const JobCard = ({ job }) => {
-  console.log(job);
   return (
     <Link to={`/job-detail/${job?._id}`}>
       <div

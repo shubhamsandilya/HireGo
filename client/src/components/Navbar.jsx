@@ -30,7 +30,6 @@ function MenuList({ user, onClick }) {
                 {user?.jobTitle ?? user?.email}
               </span>
             </div>
-
             <img
               src={user?.user?.profileUrl}
               alt="user profile"

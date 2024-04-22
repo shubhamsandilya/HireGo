@@ -97,7 +97,7 @@ export const updateCompanyProfile = async (req, res, next) => {
 
   try {
     // validation
-    if (!name || !location || !about || !contact || !profileUrl) {
+    if (!name || !location || !about || !contact) {
       next("Please Provide All Required Fields");
       return;
     }

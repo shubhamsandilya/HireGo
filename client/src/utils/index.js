@@ -30,7 +30,7 @@ export const handleFileUpload = async (uploadFile) => {
   formData.append("upload_preset", "hirego");
   try {
     const response = await axios.post(
-      "https://api.cloudinary.com/v1_1/cloudname,image/upload",
+      "https://api.cloudinary.com/v1_1/dtcfxjepi/image/upload",
       formData
     );
     return response.data.secure_url;

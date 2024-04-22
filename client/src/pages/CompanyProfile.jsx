@@ -21,7 +21,7 @@ const CompnayForm = ({ open, setOpen }) => {
     formState: { errors },
   } = useForm({
     mode: "onChange",
-    defaultValues: { ...user?.user },
+    defaultValues: { ...user },
   });
 
   const dispatch = useDispatch();
@@ -42,6 +42,7 @@ const CompnayForm = ({ open, setOpen }) => {
         data: newData,
         method: "PUT",
       });
+      console.log(res);
       setIsLoading(false);
       if (res.status === "failed") {
         setErrMsg({ ...res });
@@ -63,7 +64,7 @@ const CompnayForm = ({ open, setOpen }) => {
 
   return (
     <>
-      <Transition appear show={opener ?? false} as={Fragment}>
+      <Transition appear show={open ?? false} as={Fragment}>
         <Dialog as="div" className="relative z-50" onClose={closeModal}>
           <Transition.Child
             as={Fragment}
@@ -170,11 +171,15 @@ const CompnayForm = ({ open, setOpen }) => {
                     </div>
 
                     <div className="mt-4">
-                      <CustomButton
-                        type="submit"
-                        containerStyles="inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-8 py-2 text-sm font-medium text-white hover:bg-[#1d4fd846] hover:text-[#1d4fd8] focus:outline-none "
-                        title={"Submit"}
-                      />
+                      {isLoading ? (
+                        <Loading />
+                      ) : (
+                        <CustomButton
+                          type="submit"
+                          containerStyles="inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-8 py-2 text-sm font-medium text-white hover:bg-[#1d4fd846] hover:text-[#1d4fd8] focus:outline-none "
+                          title={"Submit"}
+                        />
+                      )}
                     </div>
                   </form>
                 </Dialog.Panel>
@@ -193,7 +198,6 @@ const CompanyProfile = () => {
   const [info, setInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [openForm, setOpenForm] = useState(false);
-
   const fetchCompany = async () => {
     setIsLoading(true);
     let id = null;
@@ -231,25 +235,23 @@ const CompanyProfile = () => {
           <h2 className="text-gray-600 text-xl font-semibold">
             Welcome, {info?.name}
           </h2>
+          {user?.user?.accountType === undefined && info?._id === user?._id && (
+            <div className="flex items-center justifu-center py-5 md:py-0 gap-4">
+              <CustomButton
+                onClick={() => setOpenForm(true)}
+                iconRight={<FiEdit3 />}
+                containerStyles={`py-1.5 px-3 md:px-5 focus:outline-none bg-blue-600  hover:bg-blue-700 text-white rounded text-sm md:text-base border border-blue-600`}
+              />
 
-          {user?.user?.accountType === undefined &&
-            info?._id === user?.user?._id && (
-              <div className="flex items-center justifu-center py-5 md:py-0 gap-4">
+              <Link to="/upload-job">
                 <CustomButton
-                  onClick={() => setOpenForm(true)}
-                  iconRight={<FiEdit3 />}
-                  containerStyles={`py-1.5 px-3 md:px-5 focus:outline-none bg-blue-600  hover:bg-blue-700 text-white rounded text-sm md:text-base border border-blue-600`}
+                  title="Upload Job"
+                  iconRight={<FiUpload />}
+                  containerStyles={`text-blue-600 py-1.5 px-3 md:px-5 focus:outline-none  rounded text-sm md:text-base border border-blue-600`}
                 />
-
-                <Link to="/upload-job">
-                  <CustomButton
-                    title="Upload Job"
-                    iconRight={<FiUpload />}
-                    containerStyles={`text-blue-600 py-1.5 px-3 md:px-5 focus:outline-none  rounded text-sm md:text-base border border-blue-600`}
-                  />
-                </Link>
-              </div>
-            )}
+              </Link>
+            </div>
+          )}
         </div>
 
         <div className="w-full flex flex-col md:flex-row justify-start md:justify-between mt-4 md:mt-8 text-sm">
@@ -274,10 +276,11 @@ const CompanyProfile = () => {
         <p>Jobs Posted</p>
 
         <div className="flex flex-wrap gap-3">
-          {jobs?.map((job, index) => {
+          {info?.jobPosts?.map((job, index) => {
             const data = {
               name: info?.name,
               email: info?.email,
+              profileUrl: info?.profileUrl,
               ...job,
             };
             return <JobCard job={data} key={index} />;

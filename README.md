@@ -33,8 +33,8 @@ To set up and run this project on your local machine, follow these steps:
 
 1. **Clone the Repository** 🔗
    ```bash
-   git clone https://github.com/your-username/job-portal-mern.git
-   cd job-portal-mern
+   git clone https://github.com/shubhamsandilya/HireGo.git
+   cd HireGo
 # Backend dependencies
 cd server
 npm install

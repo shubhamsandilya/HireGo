@@ -18,7 +18,7 @@ A modern job portal built with the MERN stack (MongoDB, Express, React, Node.js)
 - **Node.js**: Runtime environment for the backend
 - **JWT**: JSON Web Tokens for user authentication
 - **Mongoose**: ODM for MongoDB
-- **Bootstrap**: Frontend framework for styling and responsiveness
+- **Tailwind Css**: Frontend framework for styling and responsiveness
 
 ## 📚 Getting Started
 

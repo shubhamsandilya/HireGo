@@ -122,6 +122,8 @@ export const updateJob = async (req, res, next) => {
 export const getJobPosts = async (req, res, next) => {
   try {
     const { search, sort, location, jtype, exp } = req.query;
+    // console.log(jtype);
+
     const types = jtype?.split(","); //full-time,part-time
     const experience = exp?.split("-"); //2-6
 
@@ -134,8 +136,6 @@ export const getJobPosts = async (req, res, next) => {
     if (jtype) {
       queryObject.jobType = { $in: types };
     }
-
-    //    [2. 6]
 
     if (exp) {
       queryObject.experience = {
@@ -159,7 +159,6 @@ export const getJobPosts = async (req, res, next) => {
       select: "-password",
     });
 
-    // SORTING
     if (sort === "Newest") {
       queryResult = queryResult.sort("-createdAt");
     }

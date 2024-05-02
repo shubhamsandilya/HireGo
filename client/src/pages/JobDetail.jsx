@@ -49,6 +49,7 @@ const JobDetail = () => {
       console.log(e);
     }
   };
+  // console.log(job);
   useEffect(() => {
     id && getJobDetails();
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
@@ -110,7 +111,7 @@ const JobDetail = () => {
               <div className="bg-[#fed0ab] w-40 h-16 px-6 rounded-lg flex flex-col items-center justify-center">
                 <span className="text-sm">No. of Applicants</span>
                 <p className="text-lg font-semibold text-gray-700">
-                  {job?.applicants?.length}K
+                  {job?.application?.length}
                 </p>
               </div>
 
@@ -118,6 +119,12 @@ const JobDetail = () => {
                 <span className="text-sm">No. of Vacancies</span>
                 <p className="text-lg font-semibold text-gray-700">
                   {job?.vacancies}
+                </p>
+              </div>
+              <div className="bg-[#bae5f4] w-40 h-16 rounded-lg flex flex-col items-center justify-center">
+                <span className="text-sm">experience</span>
+                <p className="text-lg font-semibold text-gray-700">
+                  {job?.experience}
                 </p>
               </div>
             </div>
@@ -175,7 +182,7 @@ const JobDetail = () => {
                 </>
               )}
             </div>
-            {console.log(user?._id, "=====\n", job?.company?._id)}
+
             <div className="w-full">
               {user?._id === job?.company?._id ? (
                 <CustomButton

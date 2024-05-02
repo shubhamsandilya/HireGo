@@ -16,6 +16,7 @@ function MenuList({ user, onClick }) {
     dispatch(Logout());
     window.location.replace("/");
   };
+  // console.log(user);
 
   return (
     <div>
@@ -130,7 +131,17 @@ const Navbar = () => {
               <Link to="/companies">Companies</Link>
             </li>
             <li>
-              <Link to="/upload-job">Upload Job</Link>
+              <Link
+                to={
+                  user?.user?.accountType === "seeker"
+                    ? "/applications"
+                    : "/upload-job"
+                }
+              >
+                {user?.user?.accountType === "seeker"
+                  ? "Applications"
+                  : "Upload Job"}
+              </Link>
             </li>
             <li>
               <Link to="/about-us">About</Link>
@@ -175,10 +186,14 @@ const Navbar = () => {
           <Link
             onClick={handleCloseNavbar}
             to={
-              user?.accountType === "seeker" ? "applly-gistory" : "upload-job"
+              user?.user?.accountType === "seeker"
+                ? "applly-gistory"
+                : "upload-job"
             }
           >
-            {user?.accountType === "seeker" ? "Applications" : "Upload Job"}
+            {user?.user?.accountType === "seeker"
+              ? "Applications"
+              : "Upload Job"}
           </Link>
           <Link to="/about-us" onClick={handleCloseNavbar}>
             About

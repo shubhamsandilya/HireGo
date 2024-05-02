@@ -68,6 +68,14 @@ const FindJobs = () => {
       setExpVal([...expVal, e]);
     }
   };
+  const handleSearchSubmit = async (e) => {
+    e.preventDefault();
+    await fetchJobs();
+  };
+  const handleShowMore = async (e) => {
+    e.preventDefault();
+    setPage((prev) => prev + 1);
+  };
   useEffect(() => {
     if (expVal.length > 0) {
       let newExpVal = [];
@@ -87,7 +95,7 @@ const FindJobs = () => {
       <Header
         title="Find Your Dream Job with Ease"
         type="home"
-        handleClick={() => {}}
+        handleClick={handleSearchSubmit}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         location={jobLocation}
@@ -186,6 +194,7 @@ const FindJobs = () => {
             <div className="w-full flex items-center justify-center pt-16">
               <CustomButton
                 title="Load More"
+                onClick={handleShowMore}
                 containerStyles={`text-blue-600 py-1.5 px-5 focus:outline-none hover:bg-blue-700 hover:text-white rounded-full text-base border border-blue-600`}
               />
             </div>

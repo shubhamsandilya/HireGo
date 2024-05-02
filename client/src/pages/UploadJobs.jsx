@@ -57,10 +57,11 @@ const UploadJob = () => {
         url: "/companies/get-company/" + id,
         method: "GET",
       });
+      console.log(res);
       setRecentPost(res?.data?.jobPosts);
-      console.log(id, res);
+      console.log(id, res, "====", recentPost);
     } catch (e) {
-      console.log(e);
+      console.log(e.message);
     }
   };
   useEffect(() => {

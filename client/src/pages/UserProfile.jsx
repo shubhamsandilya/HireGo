@@ -5,7 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { HiLocationMarker } from "react-icons/hi";
 import { AiOutlineMail } from "react-icons/ai";
 import { FiPhoneCall } from "react-icons/fi";
-import { CustomButton, TextInput } from "../components";
+import { CustomButton, Loading, TextInput } from "../components";
+import { apiRequest, handleFileUpload } from "../utils";
+import { Login } from "../redux/userSlice";
 
 const UserForm = ({ open, setOpen }) => {
   const { user } = useSelector((state) => state.user);
@@ -22,8 +24,38 @@ const UserForm = ({ open, setOpen }) => {
   const dispatch = useDispatch();
   const [profileImage, setProfileImage] = useState("");
   const [uploadCv, setUploadCv] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [errMsg, setErrMsg] = useState({ status: false });
 
-  const onSubmit = async (data) => {};
+  const onSubmit = async (data) => {
+    setIsLoading(true);
+    setErrMsg(null);
+    const uri = profileImage && (await handleFileUpload(profileImage));
+    const newData = uri ? { ...data, profileUrl: uri } : data;
+    try {
+      const res = await apiRequest({
+        url: "/users/update-user",
+        token: user?.token,
+        data: newData,
+        method: "PUT",
+      });
+      console.log(res);
+      setIsLoading(false);
+      if (res.status === "failed") {
+        setErrMsg({ ...res });
+      } else {
+        setErrMsg({ status: "success", message: res.message });
+        dispatch(Login(data));
+        localStorage.setItem("userInfo", JSON.stringify(data));
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.log(error);
+    }
+  };
 
   const closeModal = () => setOpen(false);
 
@@ -183,11 +215,15 @@ const UserForm = ({ open, setOpen }) => {
                     </div>
 
                     <div className="mt-4">
-                      <CustomButton
-                        type="submit"
-                        containerStyles="inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-8 py-2 text-sm font-medium text-white hover:bg-[#1d4fd846] hover:text-[#1d4fd8] focus:outline-none "
-                        title={"Submit"}
-                      />
+                      {isLoading ? (
+                        <Loading />
+                      ) : (
+                        <CustomButton
+                          type="submit"
+                          containerStyles="inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-8 py-2 text-sm font-medium text-white hover:bg-[#1d4fd846] hover:text-[#1d4fd8] focus:outline-none "
+                          title={"Submit"}
+                        />
+                      )}
                     </div>
                   </form>
                 </Dialog.Panel>

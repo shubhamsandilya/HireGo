@@ -8,6 +8,7 @@ import { FiPhoneCall } from "react-icons/fi";
 import { CustomButton, Loading, TextInput } from "../components";
 import { apiRequest, handleFileUpload } from "../utils";
 import { Login } from "../redux/userSlice";
+import { NoProfile } from "../assets";
 
 const UserForm = ({ open, setOpen }) => {
   const { user } = useSelector((state) => state.user);
@@ -45,11 +46,10 @@ const UserForm = ({ open, setOpen }) => {
         setErrMsg({ ...res });
       } else {
         setErrMsg({ status: "success", message: res.message });
-        dispatch(Login(data));
-        localStorage.setItem("userInfo", JSON.stringify(data));
-        setTimeout(() => {
-          window.location.reload();
-        }, 1500);
+        const newData = { token: res?.token, ...res?.user };
+        dispatch(Login(newData));
+        localStorage.setItem("userInfo", JSON.stringify(res));
+        window.location.reload();
       }
     } catch (error) {
       setIsLoading(false);
@@ -280,7 +280,7 @@ const UserProfile = () => {
 
             <div className="w-full md:w-1/3 h-44">
               <img
-                src={userInfo?.profileUrl}
+                src={userInfo?.profileUrl || NoProfile}
                 alt={userInfo?.firstName}
                 className="w-full h-48 object-contain rounded-lg"
               />

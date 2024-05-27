@@ -53,6 +53,7 @@ const SignUp = ({ open, setOpen }) => {
       } else {
         setErrMsg("");
         const data = { token: res?.token, ...res?.user };
+        console.log(data);
         dispatch(Login(data));
         localStorage.setItem("userInfo", JSON.stringify(data));
         window.location.replace(from);

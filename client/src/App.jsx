@@ -10,6 +10,7 @@ import {
   UploadJobs,
   UserProfile,
 } from "./pages";
+import Apply from "./pages/Apply";
 import { useSelector } from "./redux/store";
 function Layout() {
   const { user } = useSelector((state) => state.user);
@@ -48,6 +49,7 @@ function App() {
         </Route>
         <Route path="/about-us" element={<About />} />
         <Route path="/user-auth" element={<AuthPage />} />
+        <Route path="apply-page/:id" element={<Apply />} />
       </Routes>
       {user && <Footer />}
     </main>

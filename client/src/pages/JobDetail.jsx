@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Linkedin } from "../assets";
 import moment from "moment";
 import { AiOutlineSafetyCertificate } from "react-icons/ai";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { jobs } from "../utils/data";
 import { CustomButton, JobCard, Loading } from "../components";
 import { useSelector } from "react-redux";
@@ -48,6 +48,10 @@ const JobDetail = () => {
     } catch (e) {
       console.log(e);
     }
+  };
+  const navigate = useNavigate();
+  const applyFrom = () => {
+    navigate(`/apply-page/${id}`);
   };
   // console.log(job);
   useEffect(() => {
@@ -193,6 +197,7 @@ const JobDetail = () => {
               ) : (
                 <CustomButton
                   title="Apply Now"
+                  onClick={applyFrom}
                   containerStyles={`w-full flex items-center justify-center text-white bg-black py-3 px-5 outline-none rounded-full text-base`}
                 />
               )}

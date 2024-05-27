@@ -16,7 +16,7 @@ function MenuList({ user, onClick }) {
     dispatch(Logout());
     window.location.replace("/");
   };
-  // console.log(user);
+  console.log(user);
 
   return (
     <div>

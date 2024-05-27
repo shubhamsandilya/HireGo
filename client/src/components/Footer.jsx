@@ -46,9 +46,6 @@ const Footer = () => {
           </div>
         </div>
         <div className="">
-          <p className="container px-5 mx-auto text-white">
-            Subscribe to our Newsletter
-          </p>
           <div className="contaier mx-auto px-5 pt-6 pb-8 flex flex-wrap items-center justify-center justify-between">
             <div className="w-full md:w-2/4 lg:w1/3 h-16 flex items-center justify-center md:justify-start">
               <TextInput

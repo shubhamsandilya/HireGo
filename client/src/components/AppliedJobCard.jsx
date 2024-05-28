@@ -3,7 +3,15 @@ import React, { useState } from "react";
 function AppliedJobCard({ job }) {
   const [length, setlength] = useState(250);
   const [status, setStatus] = useState(false);
-  const stages = ["applied", "Viewed", "interviewing", "hired", "rejected"];
+  const [isExpanded, setIsExpanded] = useState(false);
+  const description = job.Jobs_data.detail[0].desc;
+  const maxLength = 250;
+
+  const toggleDescription = () => {
+    setIsExpanded(!isExpanded);
+  };
+
+  const stages = ["Applied", "Viewed", "Interviewing", "Hired", "Rejected"];
   const currentStageIndex = stages.indexOf(job.status) + 1;
   console.log(job);
   return (
@@ -11,16 +19,26 @@ function AppliedJobCard({ job }) {
       <div className="px-6 py-4">
         <div className="font-bold text-xl mb-2">{job.Jobs_data.jobTitle}</div>
         <p className="text-gray-700 text-base">
-          {job.Jobs_data.detail[0].desc.length > 250 ? (
-            <span
-              className="cursor-pointer"
-              onClick={() => setlength(job.Jobs_data.detail[0].desc.length)}
-            >
-              {job.Jobs_data.detail[0].desc.substring(0, length)}
-              <p className="text-blue-500 ">.....</p>
-            </span>
+          {isExpanded || description.length <= maxLength ? (
+            <span>{description}</span>
           ) : (
-            job.Jobs_data.detail[0].desc
+            <span className="cursor-text">
+              {description.substring(0, maxLength)}...
+              <span
+                className="text-blue-500 cursor-pointer "
+                onClick={toggleDescription}
+              >
+                Read more
+              </span>
+            </span>
+          )}
+          {isExpanded && description.length > maxLength && (
+            <span
+              className="text-blue-500 cursor-pointer"
+              onClick={toggleDescription}
+            >
+              Show less
+            </span>
           )}
         </p>
       </div>

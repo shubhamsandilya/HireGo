@@ -11,7 +11,7 @@ const ApplicationModel = new mongoose.Schema(
     applicantId: { type: mongoose.Schema.Types.ObjectId, ref: "Users" },
     status: {
       type: String,
-      enum: ["applied", "interviewing", "hired", "rejected"],
+      enum: ["Applied", "Viewed", "Interviewing", "Hired", "Rejected"],
       default: "applied",
     },
     phone: Number,

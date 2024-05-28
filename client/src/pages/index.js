@@ -6,6 +6,8 @@ import CompanyProfile from "./CompanyProfile";
 import UploadJobs from "./UploadJobs";
 import About from "./About";
 import JobDetail from "./JobDetail";
+import ApplyHistory from "./ApplyHistory";
+import Apply from "./Apply";
 
 export {
   JobDetail,
@@ -16,4 +18,6 @@ export {
   Companies,
   AuthPage,
   FindJobs,
+  Apply,
+  ApplyHistory,
 };

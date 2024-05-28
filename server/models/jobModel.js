@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose";
 const jobSchema = new mongoose.Schema(
   {
     company: { type: Schema.Types.ObjectId, ref: "Companies" },
+    companyName: String,
     jobTitle: { type: String, required: [true, "Job Title is required"] },
     jobType: { type: String, required: [true, "Job Type is required"] },
     location: { type: String, required: [true, "Location is required"] },

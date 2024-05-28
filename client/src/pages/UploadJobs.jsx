@@ -29,6 +29,8 @@ const UploadJob = () => {
     setErrMsg(null);
     console.log("first");
     const newData = { ...data, jobType: jobType };
+    console.log(newData);
+    setIsLoading(false);
     try {
       const res = await apiRequest({
         url: "/jobs/upload-job",
@@ -57,9 +59,9 @@ const UploadJob = () => {
         url: "/companies/get-company/" + id,
         method: "GET",
       });
-      console.log(res);
+      // console.log(res);
       setRecentPost(res?.data?.jobPosts);
-      console.log(id, res, "====", recentPost);
+      // console.log(id, res, "====", recentPost);
     } catch (e) {
       console.log(e.message);
     }
@@ -136,17 +138,34 @@ const UploadJob = () => {
                 />
               </div>
             </div>
+            <div className="w-full flex gap-4">
+              <div className="w-1/2">
+                <TextInput
+                  name="companyName"
+                  label="Company Name"
+                  placeholder="Company Name"
+                  type="text"
+                  register={register("companyName", {
+                    required: "company name is required!",
+                  })}
+                  error={errors.company ? errors.company?.message : ""}
+                />
+              </div>
 
-            <TextInput
-              name="location"
-              label="Job Location"
-              placeholder="eg. New York"
-              type="text"
-              register={register("location", {
-                required: "Job Location is required",
-              })}
-              error={errors.location ? errors.location?.message : ""}
-            />
+              <div className="w-1/2">
+                <TextInput
+                  name="location"
+                  label="Job Location"
+                  placeholder="eg. New York"
+                  type="text"
+                  register={register("location", {
+                    required: "Job Location is required",
+                  })}
+                  error={errors.location ? errors.location?.message : ""}
+                />
+              </div>
+            </div>
+
             <div className="flex flex-col">
               <label className="text-gray-600 text-sm mb-1">
                 Job Description
@@ -201,7 +220,6 @@ const UploadJob = () => {
 
         <div className="w-full flex flex-wrap gap-6">
           {recentPost.slice(0, 4).map((job, index) => {
-            console.log(user);
             const data = {
               name: user?.name,
               email: user?.email,

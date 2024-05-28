@@ -9,6 +9,7 @@ import {
   JobDetail,
   UploadJobs,
   UserProfile,
+  ApplyHistory,
 } from "./pages";
 import Apply from "./pages/Apply";
 import { useSelector } from "./redux/store";
@@ -50,6 +51,7 @@ function App() {
         <Route path="/about-us" element={<About />} />
         <Route path="/user-auth" element={<AuthPage />} />
         <Route path="apply-page/:id" element={<Apply />} />
+        <Route path="apply-history" element={<ApplyHistory />} />
       </Routes>
       {user && <Footer />}
     </main>

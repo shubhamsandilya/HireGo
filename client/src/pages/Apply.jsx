@@ -69,7 +69,12 @@ const Apply = () => {
           className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative flex flex-col  items-center"
           role="alert"
         >
-          <img src={success} alt="" width={35} height={35} />
+          <img
+            src="../assets/success.png"
+            alt="Success logo"
+            width={35}
+            height={35}
+          />
           <strong className="font-bold">Success!</strong>
           <span className="block sm:inline">
             Your job application has been submitted successfully.

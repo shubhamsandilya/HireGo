@@ -16,7 +16,7 @@ function MenuList({ user, onClick }) {
     dispatch(Logout());
     window.location.replace("/");
   };
-  console.log(user);
+  // console.log(user);
 
   return (
     <div>
@@ -108,7 +108,7 @@ function MenuList({ user, onClick }) {
 const Navbar = () => {
   const user = useSelector((state) => state.user);
   const [isOpen, setIsOpen] = useState(false);
-  // console.log(user?.user?.token);
+  // console.log(user);
   const handleCloseNavbar = () => {
     setIsOpen((prev) => !prev);
   };
@@ -134,7 +134,7 @@ const Navbar = () => {
               <Link
                 to={
                   user?.user?.accountType === "seeker"
-                    ? "/applications"
+                    ? "/apply-history"
                     : "/upload-job"
                 }
               >
@@ -147,7 +147,7 @@ const Navbar = () => {
               <Link to="/about-us">About</Link>
             </li>
           </ul>
-
+          {/* {console.log(user.user.token)} */}
           <div className="hidden lg:block">
             {!user?.user?.token ? (
               <Link to="/user-auth">
@@ -187,7 +187,7 @@ const Navbar = () => {
             onClick={handleCloseNavbar}
             to={
               user?.user?.accountType === "seeker"
-                ? "applly-gistory"
+                ? "apply-history"
                 : "upload-job"
             }
           >

@@ -31,3 +31,53 @@ export const postApplication = async (req, res, next) => {
     next(error.Message);
   }
 };
+
+export const getAplication = async (req, res, next) => {
+  const { currentUser } = req?.query;
+  console.log(currentUser);
+  try {
+    const result = await application.aggregate([
+      {
+        $match: {
+          $expr: { $eq: ["$applicantId", { $toObjectId: currentUser }] },
+        },
+      },
+      {
+        $lookup: {
+          from: "jobs",
+          localField: "jobId",
+          foreignField: "_id",
+          as: "Jobs_data",
+        },
+      },
+      {
+        $unwind: { path: "$Jobs_data" },
+      },
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+      {
+        $project: {
+          "Jobs_data.jobTitle": 1,
+          createdAt: 1,
+          "Jobs_data.location": 1,
+          "Jobs_data.detail[0].desc": 1,
+          "Jobs_data.company": 1,
+          "Jobs_data.companyName": 1,
+          "Jobs_data.detail": 1,
+          company: 1,
+          status: 1,
+        },
+      },
+    ]);
+    const company = await application.find({
+      where: {},
+    });
+    res.send(result);
+  } catch (e) {
+    console.log(e);
+    next();
+  }
+};

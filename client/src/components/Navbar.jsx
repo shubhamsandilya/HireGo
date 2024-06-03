@@ -146,6 +146,13 @@ const Navbar = () => {
             <li>
               <Link to="/about-us">About</Link>
             </li>
+            <li>
+              {user?.user?.accountType !== "seeker" ? (
+                <Link to="/my-openings">My Openings</Link>
+              ) : (
+                ""
+              )}
+            </li>
           </ul>
           {/* {console.log(user.user.token)} */}
           <div className="hidden lg:block">
@@ -197,6 +204,9 @@ const Navbar = () => {
           </Link>
           <Link to="/about-us" onClick={handleCloseNavbar}>
             About
+          </Link>
+          <Link to="/my-openings" onClick={handleCloseNavbar}>
+            {user?.user?.accountType !== "seeker" ? "My Openings" : ""}
           </Link>
 
           <div className="w-full py-10">

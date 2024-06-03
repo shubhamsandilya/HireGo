@@ -1,5 +1,6 @@
 // import { application } from "express"
 import application from "../models/ApplicationModel.js";
+import Jobs from "../models/jobModel.js";
 
 export const postApplication = async (req, res, next) => {
   const { fullName, email, phoneNumber, resume, coverLetter, currentUser } =
@@ -21,6 +22,14 @@ export const postApplication = async (req, res, next) => {
       CV: coverLetter,
       applicantId: currentUser,
     });
+    const updateCmp = await Jobs.findOneAndUpdate(
+      {
+        _id: req?.params?.id,
+      },
+      {
+        application: result?._id,
+      }
+    );
 
     res.json({
       success: true,
@@ -79,5 +88,35 @@ export const getAplication = async (req, res, next) => {
   } catch (e) {
     console.log(e);
     next();
+  }
+};
+export const getApplicants = async (req, res) => {
+  try {
+    const jobId = req.params.jobId;
+    console.log(req.params);
+
+    // Find the job by ID and populate the applications
+    const job = await application
+      .find({ jobId: jobId })
+      .populate({ path: "applicantId", select: "profileUrl" })
+      .select({
+        name: 1,
+        email: 1,
+        phone: 1,
+        resume: 1,
+        CV: 1,
+        url: "$applicantId.profileUrl",
+        // "applicantId.profileUrl": 1,
+      });
+    // .populate("company")
+    // .populate("application");
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    res.json(job);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 };

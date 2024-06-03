@@ -8,6 +8,8 @@ import About from "./About";
 import JobDetail from "./JobDetail";
 import ApplyHistory from "./ApplyHistory";
 import Apply from "./Apply";
+import Applicants from "./Applicants";
+import YourOpenings from "./YourOpenings";
 
 export {
   JobDetail,
@@ -20,4 +22,6 @@ export {
   FindJobs,
   Apply,
   ApplyHistory,
+  // Applicants,
+  YourOpenings,
 };

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 function AppliedJobCard({ job }) {
-  const [length, setlength] = useState(250);
+  // const [length, setlength] = useState(250);
   const [status, setStatus] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const description = job.Jobs_data.detail[0].desc;

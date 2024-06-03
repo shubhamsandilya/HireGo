@@ -261,3 +261,21 @@ export const deleteJobPost = async (req, res, next) => {
     res.status(404).json({ message: error.message });
   }
 };
+
+export const getJobByCompanyId = async (req, res, next) => {
+  const { id } = req?.params;
+  console.log(id);
+  // console.log(req?.query);
+  try {
+    const result = await Jobs.find({ company: id }).populate({
+      path: "company",
+      select: " profileUrl",
+    });
+    res.status(201).json({
+      message: "Jobs fetched successfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

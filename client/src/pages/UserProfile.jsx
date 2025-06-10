@@ -47,6 +47,7 @@ const UserForm = ({ open, setOpen }) => {
       } else {
         setErrMsg({ status: "success", message: res.message });
         const newData = { token: res?.token, ...res?.user };
+        console.log(newData);
         dispatch(Login(newData));
         localStorage.setItem("userInfo", JSON.stringify(res));
         window.location.reload();

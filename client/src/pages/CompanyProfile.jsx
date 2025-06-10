@@ -35,6 +35,7 @@ const CompnayForm = ({ open, setOpen }) => {
     setErrMsg(null);
     const uri = profileImage && (await handleFileUpload(profileImage));
     const newData = uri ? { ...data, profileUrl: uri } : data;
+    console.log(newData);
     try {
       const res = await apiRequest({
         url: "/companies/update-company",
@@ -43,16 +44,18 @@ const CompnayForm = ({ open, setOpen }) => {
         method: "PUT",
       });
       console.log(res);
-      setIsLoading(false);
       if (res.status === "failed") {
         setErrMsg({ ...res });
       } else {
         setErrMsg({ status: "success", message: res.message });
-        dispatch(Login(data));
+        dispatch(Login({ ...data, profileUrl: uri }));
         localStorage.setItem("userInfo", JSON.stringify(data));
+        setIsLoading(false);
+        console.log(user);
         setTimeout(() => {
           window.location.reload();
         }, 1500);
+        // CompanyProfile.fetchCompany();
       }
     } catch (error) {
       setIsLoading(false);
@@ -201,6 +204,7 @@ const CompanyProfile = () => {
   const fetchCompany = async () => {
     setIsLoading(true);
     let id = null;
+    
     if (params.id && params.id !== undefined) {
       id = params?.id;
     } else {
@@ -212,6 +216,7 @@ const CompanyProfile = () => {
         method: "GET",
       });
       setInfo(res?.data);
+      console.log(res);
       setIsLoading(false);
     } catch (e) {
       console.log(e);

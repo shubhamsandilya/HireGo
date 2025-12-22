@@ -77,7 +77,7 @@ export const signIn = async (req, res, next) => {
       return;
     }
     company.password = undefined;
-
+    company.accountType = "company";
     const token = company.createJWT();
 
     res.status(200).json({

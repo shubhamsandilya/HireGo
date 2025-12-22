@@ -1,27 +1,26 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { HiLocationMarker } from "react-icons/hi";
 import { AiOutlineMail } from "react-icons/ai";
 import { FiPhoneCall } from "react-icons/fi";
-import { CustomButton, Loading, TextInput } from "../components";
+import CustomButton from "../components/CustomButton";
+import Loading from "../components/Loading";
+import TextInput from "../components/TextInput";
+
 import { apiRequest, handleFileUpload } from "../utils";
 import { Login } from "../redux/userSlice";
 import { NoProfile } from "../assets";
 
-const UserForm = ({ open, setOpen }) => {
+const UserForm = ({userIn, open, setOpen }) => {
   const { user } = useSelector((state) => state.user);
   const {
-    register,
-    handleSubmit,
-    getValues,
-    watch,
-    formState: { errors },
-  } = useForm({
-    mode: "onChange",
-    defaultValues: { ...user?.user },
-  });
+  register,
+  handleSubmit,
+  reset,
+  formState: { errors },
+} = useForm({ mode: "onChange" });
   const dispatch = useDispatch();
   const [profileImage, setProfileImage] = useState("");
   const [uploadCv, setUploadCv] = useState("");
@@ -29,35 +28,53 @@ const UserForm = ({ open, setOpen }) => {
   const [errMsg, setErrMsg] = useState({ status: false });
 
   const onSubmit = async (data) => {
-    setIsLoading(true);
-    setErrMsg(null);
-    const uri = profileImage && (await handleFileUpload(profileImage));
-    const newData = uri ? { ...data, profileUrl: uri } : data;
-    try {
-      const res = await apiRequest({
-        url: "/users/update-user",
-        token: user?.token,
-        data: newData,
-        method: "PUT",
-      });
-      console.log(res);
-      setIsLoading(false);
-      if (res.status === "failed") {
-        setErrMsg({ ...res });
-      } else {
-        setErrMsg({ status: "success", message: res.message });
-        const newData = { token: res?.token, ...res?.user };
-        console.log(newData);
-        dispatch(Login(newData));
-        localStorage.setItem("userInfo", JSON.stringify(res));
-        window.location.reload();
-      }
-    } catch (error) {
-      setIsLoading(false);
-      console.log(error);
-    }
+  setIsLoading(true);
+  setErrMsg(null);
+
+  let profileUrl = user?.user?.profileUrl;
+  let cvUrl = user?.user?.cvUrl;
+
+  if (profileImage) {
+    profileUrl = await handleFileUpload(profileImage);
+  }
+
+  if (uploadCv) {
+    cvUrl = await handleFileUpload(uploadCv);
+  }
+
+  const payload = {
+    ...data,
+    profileUrl,
+    cvUrl,
   };
 
+  try {
+    const res = await apiRequest({
+      url: "/users/update-user",
+      token: user?.token,
+      data: payload,
+      method: "PUT",
+    });
+
+    if (res.status !== "failed") {
+      dispatch(Login({ token: res.token, ...res.user }));
+      localStorage.setItem("userInfo", JSON.stringify(res));
+      setOpen(false);
+    } else {
+      setErrMsg(res);
+    }
+  } catch (err) {
+    console.log(err);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+useEffect(() => {
+  if (user?.user) {
+    reset(user.user);
+  }
+}, [user, reset]);
   const closeModal = () => setOpen(false);
 
   return (
@@ -181,14 +198,26 @@ const UserForm = ({ open, setOpen }) => {
                       </div>
 
                       <div className="w-1/2">
-                        <label className="text-gray-600 text-sm mb-1">
-                          Resume
-                        </label>
-                        <input
-                          type="file"
-                          onChange={(e) => setUploadCv(e.target.files[0])}
-                        />
-                      </div>
+  <label className="text-gray-600 text-sm mb-1">Resume</label>
+
+  {user?.user?.cvUrl && (
+    <a
+      href={user.user.cvUrl}
+      target="_blank"
+      rel="noreferrer"
+      className="block text-xs text-blue-600 underline mb-1"
+    >
+      View existing resume
+    </a>
+  )}
+
+  <input
+    type="file"
+    accept=".pdf,.doc,.docx"
+    onChange={(e) => setUploadCv(e.target.files[0])}
+  />
+</div>
+
                     </div>
 
                     <div className="flex flex-col">
@@ -278,6 +307,16 @@ const UserProfile = () => {
                 {userInfo?.about ?? "No About Found"}
               </span>
             </div>
+            {userInfo?.cvUrl && (
+  <a
+    href={userInfo.cvUrl}
+    target="_blank"
+    rel="noreferrer"
+    className="text-blue-600 underline mt-2 block"
+  >
+    View Resume
+  </a>
+)}
 
             <div className="w-full md:w-1/3 h-44">
               <img
@@ -296,7 +335,7 @@ const UserProfile = () => {
         </div>
       </div>
 
-      <UserForm open={open} setOpen={setOpen} />
+      <UserForm userIn={userInfo} open={open} setOpen={setOpen} />
     </div>
   );
 };

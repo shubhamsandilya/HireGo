@@ -1,4 +1,4 @@
-import { Footer, Navbar } from "./components";
+import { Footer, Navbar,SignUp } from "./components";
 import { Outlet, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import {
   About,
@@ -53,7 +53,7 @@ function App() {
           <Route path="/job-detail/:id" element={<JobDetail />} />
         </Route>
         <Route path="/about-us" element={<About />} />
-        <Route path="/user-auth" element={<AuthPage />} />
+        <Route path="/user-auth" element={<SignUp />} />
         <Route path="/apply-page/:id" element={<Apply />} />
         <Route path="/apply-history" element={<ApplyHistory />} />
         <Route path="/applicants/:jobId" element={<Applicants />} />

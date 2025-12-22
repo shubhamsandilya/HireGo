@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BiBriefcaseAlt2 } from "react-icons/bi";
 import { BsStars } from "react-icons/bs";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import { debounce } from "lodash";
 
 import Header from "../components/Header";
 import { experience, jobTypes } from "../utils/data";
@@ -19,7 +20,8 @@ const FindJobs = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [jobLocation, setJobLocation] = useState("");
   const [filterJobTypes, setFilterJobTypes] = useState([]);
-  const [filterExp, setFilterExp] = useState([]);
+  const [filterExp, setFilterExp] = useState("");
+
   const [expVal, setExpVal] = useState([]);
 
   const [isFetching, setIsFetching] = useState(false);
@@ -27,7 +29,7 @@ const FindJobs = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const fetchJobs = async () => {
+  const fetchJobs = useCallback(async () => {
     setIsFetching(true);
     const newUrl = updateURL({
       pageNum: page,
@@ -46,13 +48,14 @@ const FindJobs = () => {
       });
       setNumPage(res?.numOfPage);
       setRecordCount(res?.totalJobs);
-      setData(res?.data);
+     setData((prev) => (page === 1 ? res?.data : [...prev, ...res?.data]));
+
       setIsFetching(false);
     } catch (e) {
       setIsFetching(false);
       console.log(e);
     }
-  };
+  });
   const filterJobs = (val) => {
     if (filterJobTypes?.includes(val)) {
       setFilterJobTypes(filterJobTypes.filter((el) => el != val));
@@ -68,25 +71,30 @@ const FindJobs = () => {
       setExpVal([...expVal, e]);
     }
   };
-  const handleSearchSubmit = async (e) => {
+  const handleSearchSubmit = debounce(async (e) => {
     e.preventDefault();
+    setPage(1);
     await fetchJobs();
-  };
+  },1000);
   const handleShowMore = async (e) => {
     e.preventDefault();
     setPage((prev) => prev + 1);
   };
-  useEffect(() => {
-    if (expVal.length > 0) {
-      let newExpVal = [];
-      expVal?.map((el) => {
-        const newEl = el?.split("-");
-        newExpVal.push(Number(newEl[0]), Number(newEl[1]));
-      });
-      newExpVal?.sort((a, b) => a - b);
-      setFilterExp(`${newExpVal[0]}-${newExpVal[newExpVal?.length - 1]}`);
-    }
-  }, [expVal]);
+ useEffect(() => {
+  if (!expVal.length) {
+    setFilterExp("");
+    return;
+  }
+
+  const ranges = expVal.flatMap((el) => {
+    const [min, max] = el.split("-").map(Number);
+    return [min, max];
+  });
+
+  ranges.sort((a, b) => a - b);
+  setFilterExp(`${ranges[0]}-${ranges[ranges.length - 1]}`);
+}, [expVal]);
+
   useEffect(() => {
     fetchJobs();
   }, [sort, filterJobTypes, filterExp, page]);
@@ -122,11 +130,11 @@ const FindJobs = () => {
               {jobTypes.map((jtype, index) => (
                 <div key={index} className="flex gap-2 text-sm md:text-base ">
                   <input
-                    type="checkbox"
-                    value={jtype}
-                    className="w-4 h-4"
-                    onChange={(e) => filterJobs(e.target.value)}
-                  />
+  type="checkbox"
+  value={jtype}
+  checked={filterJobTypes.includes(jtype)}
+  onChange={(e) => filterJobs(e.target.value)}
+/>
                   <span>{jtype}</span>
                 </div>
               ))}
@@ -149,11 +157,12 @@ const FindJobs = () => {
               {experience.map((exp) => (
                 <div key={exp.title} className="flex gap-3">
                   <input
-                    type="checkbox"
-                    value={exp?.value}
-                    className="w-4 h-4"
-                    onChange={(e) => filterExperience(e.target.value)}
-                  />
+  type="checkbox"
+  value={exp.value}
+  checked={expVal.includes(exp.value)}
+  onChange={(e) => filterExperience(e.target.value)}
+/>
+
                   <span>{exp.title}</span>
                 </div>
               ))}
@@ -164,7 +173,7 @@ const FindJobs = () => {
         <div className="w-full md:w-5/6 px-5 md:px-0">
           <div className="flex items-center justify-between mb-4">
             <p className="text-sm md:text-base">
-              Shwoing: <span className="font-semibold">{recordCount}</span> Jobs
+              Showing: <span className="font-semibold">{recordCount}</span> Jobs
               Available
             </p>
 
@@ -176,13 +185,19 @@ const FindJobs = () => {
           </div>
 
           <div className="w-full flex flex-wrap gap-4">
+            {!isFetching && data.length === 0 && (
+  <p className="text-center text-gray-500 w-full py-10">
+    No jobs found matching your criteria.
+  </p>
+)}
+
             {data.map((job, index) => {
               const newJob = {
                 name: job?.company?.name,
                 logo: job?.company?.profileUrl,
                 ...job,
               };
-              return <JobCard job={newJob} key={index} />;
+              return <JobCard job={newJob} key={job._id || index} />;
             })}
           </div>
           {isFetching && (

@@ -21,25 +21,32 @@ function MenuList({ user, onClick }) {
     <div>
       <Menu as="div" className="inline-block text-left">
         <div className="flex">
-          <Menu.Button className="inline-flex gap-2 w-full rounded-md  md:px-4 py-2 text-sm font-medium text-slate-700 hover:bg-white ">
-            <div className="leading[80px] flex flex-col items-start">
-              <p className="text-sm font-semibold ">
-                {user?.user?.firstName ?? user?.user?.name}
-              </p>
-              <span className="text-sm text-blue-600 ">
-                {user?.jobTitle ?? user?.email}
-              </span>
-            </div>
-            <img
-              src={user?.user?.profileUrl}
-              alt="user profile"
-              className="w-10 h-10 rounded-full object-cover "
-            />
-            <BiChevronDown
-              className="h-8 w-8 text-slate-600"
-              aria-hidden="true"
-            />
-          </Menu.Button>
+          <Menu.Button className="flex items-center gap-3 w-full rounded-md md:px-4 py-2 text-sm font-medium text-slate-700 hover:bg-white">
+  
+  {/* Text */}
+  <div className="flex flex-col items-start leading-tight">
+    <p className="text-sm font-semibold">
+      {user?.user?.firstName ?? user?.user?.name}
+    </p>
+    <span className="text-xs text-blue-600">
+      {user?.jobTitle ?? user?.email}
+    </span>
+  </div>
+
+  {/* Avatar */}
+  <img
+    src={
+      user?.user?.profileUrl ??
+      `https://avatar.iran.liara.run/username?username=${user?.user?.firstName}${user?.user?.lastName}`
+    }
+    alt="user profile"
+    className="w-10 h-10 rounded-full object-cover"
+  />
+
+  {/* Arrow */}
+  <BiChevronDown className="h-6 w-6 text-slate-600" aria-hidden="true" />
+</Menu.Button>
+
         </div>
 
         <Transition
@@ -107,11 +114,41 @@ function MenuList({ user, onClick }) {
 const Navbar = () => {
   const user = useSelector((state) => state.user);
   console.log(user);
+
+  const isLoggedIn = Boolean(user?.user?.token);
+const accountType = user?.user?.accountType; // "seeker" | "company" | undefined
+const isSeeker = accountType === "seeker";
+const isCompany = accountType === "company";
+
+  const navLinks = [
+  { label: "Find Job", to: "/" },
+  { label: "Companies", to: "/companies" },
+  { label: "About", to: "/about-us" },
+];
+
+  const roleLinks = () => {
+  if (!isLoggedIn) return [];
+
+  if (isSeeker) {
+    return [{ label: "Applications", to: "/apply-history" }];
+  }
+
+  if (isCompany) {
+    return [
+      { label: "Upload Job", to: "/upload-job" },
+      { label: "My Openings", to: "/my-openings" },
+    ];
+  }
+
+  return [];
+};
+
   const [isOpen, setIsOpen] = useState(false);
   // console.log(user);
-  const handleCloseNavbar = () => {
-    setIsOpen((prev) => !prev);
-  };
+ const handleCloseNavbar = () => {
+  setIsOpen(false);
+};
+
 
   return (
     <>
@@ -124,51 +161,27 @@ const Navbar = () => {
           </div>
 
           <ul className="hidden lg:flex gap-10 text-base">
-            <li>
-              <Link to="/">Find Job</Link>
-            </li>
-            <li>
-              <Link to="/companies">Companies</Link>
-            </li>
-            <li>
-              <Link
-                to={
-                  user?.user?.accountType === "seeker"
-                    ? "/apply-history"
-                    : "/upload-job"
-                }
-              >
-                {user?.user?.accountType === "seeker"
-                  ? "Applications"
-                  : "Upload Job"}
-              </Link>
-            </li>
-            <li>
-              <Link to="/about-us">About</Link>
-            </li>
-            <li>
-              {user?.user?.accountType !== "seeker" ? (
-                <Link to="/my-openings">My Openings</Link>
-              ) : (
-                ""
-              )}
-            </li>
-          </ul>
+  {[...navLinks, ...roleLinks()].map((item) => (
+    <li key={item.to}>
+      <Link to={item.to}>{item.label}</Link>
+    </li>
+  ))}
+</ul>
+
           {/* {console.log(user.user.token)} */}
           <div className="hidden lg:block">
-            {!user?.user?.token ? (
-              <Link to="/user-auth">
-                <CustomButton
-                  title="Sign In"
-                  containerStyles="text-blue-600 py-1.5 px-5 focus:outline-none hover:bg-blue-700 hover:text-white rounded-full text-base border border-blue-600"
-                />
-              </Link>
-            ) : (
-              <div>
-                <MenuList user={user} />
-              </div>
-            )}
-          </div>
+  {!isLoggedIn ? (
+    <Link to="/user-auth">
+      <CustomButton
+        title="Sign In"
+        containerStyles="text-blue-600 py-1.5 px-5 hover:bg-blue-700 hover:text-white rounded-full border border-blue-600"
+      />
+    </Link>
+  ) : (
+    <MenuList user={user} />
+  )}
+</div>
+
 
           <button
             className="block lg:hidden text-slate-900"
@@ -180,50 +193,30 @@ const Navbar = () => {
 
         {/* MOBILE MENU */}
         <div
-          className={`${
-            isOpen ? "absolute flex bg-[#f7fdfd] " : "hidden"
-          } container mx-auto lg:hidden flex-col pl-8 gap-3 py-5`}
-        >
-          <Link to="/" onClick={handleCloseNavbar}>
-            Find Job
-          </Link>
-          <Link to="/companies" onClick={handleCloseNavbar}>
-            Companies
-          </Link>
-          <Link
-            onClick={handleCloseNavbar}
-            to={
-              user?.user?.accountType === "seeker"
-                ? "apply-history"
-                : "upload-job"
-            }
-          >
-            {user?.user?.accountType === "seeker"
-              ? "Applications"
-              : "Upload Job"}
-          </Link>
-          <Link to="/about-us" onClick={handleCloseNavbar}>
-            About
-          </Link>
-          <Link to="/my-openings" onClick={handleCloseNavbar}>
-            {user?.user?.accountType !== "seeker" ? "My Openings" : ""}
-          </Link>
+  className={`${
+    isOpen ? "absolute flex bg-[#f7fdfd]" : "hidden"
+  } container mx-auto lg:hidden flex-col pl-8 gap-3 py-5`}
+>
+  {[...navLinks, ...roleLinks()].map((item) => (
+    <Link key={item.to} to={item.to} onClick={handleCloseNavbar}>
+      {item.label}
+    </Link>
+  ))}
 
-          <div className="w-full py-10">
-            {!user?.user?.token ? (
-              <a href="/user-auth">
-                <CustomButton
-                  title="Sign In"
-                  containerStyles={`text-blue-600 py-1.5 px-5 focus:outline-none hover:bg-blue-700 hover:text-white rounded-full text-base border border-blue-600`}
-                />
-              </a>
-            ) : (
-              <div>
-                <MenuList user={user} onClick={handleCloseNavbar} />
-              </div>
-            )}
-          </div>
-        </div>
+  <div className="w-full py-10">
+    {!isLoggedIn ? (
+      <Link to="/user-auth" onClick={handleCloseNavbar}>
+        <CustomButton
+          title="Sign In"
+          containerStyles="text-blue-600 py-1.5 px-5 hover:bg-blue-700 hover:text-white rounded-full border border-blue-600"
+        />
+      </Link>
+    ) : (
+      <MenuList user={user} onClick={handleCloseNavbar} />
+    )}
+  </div>
+</div>
+
       </div>
     </>
   );

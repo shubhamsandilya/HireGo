@@ -13,7 +13,7 @@ export const updateUser = async (req, res, next) => {
     about,
   } = req.body;
   try {
-    if (!firstName || !lastName || !email || !contact || !jobTitle || !about) {
+    if (!firstName || !lastName  || !contact || !jobTitle || !about) {
       next("Please provide all required fields");
     }
     const id = req.body.user.userId;
@@ -34,7 +34,7 @@ export const updateUser = async (req, res, next) => {
     const user = await Users.findByIdAndUpdate(id, update, { new: true });
     const token = user.createJWT();
     user.password = undefined;
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "User updated successfully",
       user,
@@ -42,8 +42,8 @@ export const updateUser = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    // next(error);
-    // res.status(404).json({ message: error.message });
+    next(error);
+    res.status(404).json({ message: error.message });
   }
 };
 export const getUser = async (req, res, next) => {

@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 
 import xss from "xss-clean";
 import MongoSanitize from "express-mongo-sanitize";
-import dbConnection from "./dbConfig/dbConnection.js";
+import dbConnection from "./config/dbConnection.js";
 import router from "./routes/index.js";
 import authRoute from "./routes/authRoute.js";
 import errorMiddleware from "./middleware/error.js";

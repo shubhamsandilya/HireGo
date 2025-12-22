@@ -8,6 +8,7 @@ import {
   updateJob,
   getJobByCompanyId,
 } from "../controllers/jobController.js";
+import { rateLimiter } from "../middleware/rateLimitter.js";
 
 const router = express.Router();
 
@@ -18,7 +19,7 @@ router.post("/upload-job", userAuth, createJob);
 router.put("/update-job/:jobId", userAuth, updateJob);
 
 // GET JOB POST
-router.get("/find-jobs", getJobPosts);
+router.get("/find-jobs",rateLimiter({ maxReq: 30, windowSec: 60 }), getJobPosts);
 router.get("/get-job-detail/:id", getJobById);
 
 // DELETE JOB POST

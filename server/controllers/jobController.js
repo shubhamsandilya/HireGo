@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Jobs from "../models/jobModel.js";
 import Companies from "../models/companiesModel.js";
+import redis from "../Config/redis.js";
 
 export const createJob = async (req, res, next) => {
   try {
@@ -56,6 +57,7 @@ export const createJob = async (req, res, next) => {
     const updateCompany = await Companies.findByIdAndUpdate(id, company, {
       new: true,
     });
+ await redis.del("jobs:*");
 
     res.status(200).json({
       success: true,
@@ -110,6 +112,7 @@ export const updateJob = async (req, res, next) => {
     };
 
     await Jobs.findByIdAndUpdate(jobId, jobPost, { new: true });
+await redis.del("jobs:*");
 
     res.status(200).json({
       success: true,
@@ -126,7 +129,14 @@ export const getJobPosts = async (req, res, next) => {
   try {
     const { search, sort, location, jtype, exp } = req.query;
     // console.log(jtype);
-
+ // 🔑 Create cache key
+    const cacheKey = `jobs:${JSON.stringify(req.query)}`;
+     const cachedData = await redis.get(cacheKey);
+    //  console.log(cachedData);
+    if (cachedData) {
+      console.log("cached data served");
+      return res.status(200).json(JSON.parse(cachedData));
+    }
     const types = jtype?.split(","); //full-time,part-time
     const experience = exp?.split("-"); //2-6
 
@@ -188,13 +198,19 @@ export const getJobPosts = async (req, res, next) => {
 
     const jobs = await queryResult;
 
-    res.status(200).json({
+ 
+    const response = {
       success: true,
       totalJobs,
       data: jobs,
-      page,
+      page: Number(page),
       numOfPage,
-    });
+    };
+
+    // ✅ Store in Redis (TTL = 120 sec)
+    await redis.setex(cacheKey, 120, JSON.stringify(response));
+
+    res.status(200).json(response);
   } catch (error) {
     console.log(error);
     res.status(404).json({ message: error.message });
@@ -204,7 +220,12 @@ export const getJobPosts = async (req, res, next) => {
 export const getJobById = async (req, res, next) => {
   try {
     const { id } = req.params;
-
+    const jobCacheKey= `job:${id}`;
+    const cachedData = await redis.get(jobCacheKey);
+    if (cachedData) {
+      console.log("cached data served for job by id");
+      return res.status(200).json(JSON.parse(cachedData));
+    }
     const job = await Jobs.findById({ _id: id }).populate({
       path: "company",
       select: "-password",
@@ -234,11 +255,17 @@ export const getJobById = async (req, res, next) => {
 
     queryResult = queryResult.limit(6);
     const similarJobs = await queryResult;
-
-    res.status(200).json({
+    const response = {
+      message: "Job fetched successfully",
       success: true,
       data: job,
       similarJobs,
+    };
+    // ✅ Store in Redis (TTL = 120 sec)
+    await redis.setex(jobCacheKey, 120, JSON.stringify(response));
+
+    res.status(200).json({
+...response
     });
   } catch (error) {
     console.log(error);
@@ -251,6 +278,7 @@ export const deleteJobPost = async (req, res, next) => {
     const { id } = req.params;
 
     await Jobs.findByIdAndDelete(id);
+await redis.del("jobs:*");
 
     res.status(200).send({
       success: true,
@@ -266,15 +294,25 @@ export const getJobByCompanyId = async (req, res, next) => {
   const { id } = req?.params;
   console.log(id);
   // console.log(req?.query);
+  const cacheKey = `companyJobs:${id}`;
+  const cachedData = await redis.get(cacheKey);
+  if (cachedData) {
+    console.log("cached data served for company jobs");
+    return res.status(200).json(JSON.parse(cachedData));
+  }
   try {
     const result = await Jobs.find({ company: id }).populate({
       path: "company",
       select: " profileUrl",
     });
-    res.status(201).json({
+    const response = {
       message: "Jobs fetched successfully",
+      success: true,
       data: result,
-    });
+    };
+    // ✅ Store in Redis (TTL = 120 sec)
+    await redis.setex(cacheKey, 120, JSON.stringify(response));
+    return res.status(201).json(response);
   } catch (error) {
     next(error);
   }

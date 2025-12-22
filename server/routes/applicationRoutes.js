@@ -10,8 +10,8 @@ const route = express.Router();
 
 // const route = express.Router();
 
-route.post("/:id", postApplication);
-route.get("/applications", getAplication);
-route.get("/:jobId/applicants", getApplicants);
+route.post("/:id", userAuth, postApplication);
+route.get("/applications", userAuth,getAplication);
+route.get("/:jobId/applicants",userAuth, getApplicants);
 
 export default route;

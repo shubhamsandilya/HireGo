@@ -31,6 +31,11 @@ function ApplyHistory() {
         Your Applications
       </h1>
       <div className="flex flex-col w-full flex-wrap -m-4">
+        {
+          jobs.length === 0 && (
+            <p className="text-lg">You have not applied to any jobs yet.</p>
+          )
+        }
         {jobs.map((job) => (
           <JobCard key={job.id} job={job} />
         ))}

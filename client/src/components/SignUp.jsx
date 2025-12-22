@@ -7,15 +7,18 @@ import TextInput from "./TextInput";
 import CustomButton from "./CustomButton";
 import { apiRequest } from "../utils";
 import { Login } from "../redux/userSlice";
+import { Office } from "../assets";
+import toast from "react-hot-toast";
 
-const SignUp = ({ open, setOpen }) => {
+const SignUp = () => {
   const dispatch = useDispatch();
   const location = useLocation();
 
   const [isRegister, setIsRegister] = useState(true);
+  const [open, setOpen] = useState(true);
   const [accountType, setAccountType] = useState("seeker");
 
-  const [errMsg, setErrMsg] = useState("");
+  const [errMsg, setErrMsg] = useState(null);
   const {
     register,
     handleSubmit,
@@ -27,7 +30,7 @@ const SignUp = ({ open, setOpen }) => {
   });
   let from = location.state?.from?.pathname || "/";
 
-  const closeModal = () => setOpen(false);
+  // const closeModal = () => setOpen(false);
 
   const onSubmit = async (data) => {
     let URL = null;
@@ -50,9 +53,11 @@ const SignUp = ({ open, setOpen }) => {
       });
       console.log(res);
       if (res.status === "failed") {
+        toast.error(res?.message);
         setErrMsg(res?.message);
       } else {
         setErrMsg("");
+        toast.success(res?.message);
         const data = { token: res?.token, ...res?.user };
         console.log(data);
         dispatch(Login(data));
@@ -66,8 +71,10 @@ const SignUp = ({ open, setOpen }) => {
 
   return (
     <>
+     <div className="w-full">
+          <img src={Office} alt="office" className="object-contain " />
       <Transition appear show={open || false}>
-        <Dialog as="div" className="relative z-10 " onClose={closeModal}>
+        <Dialog as="div" className="relative z-10 " onClose={() => {}}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -279,6 +286,7 @@ const SignUp = ({ open, setOpen }) => {
           </div>
         </Dialog>
       </Transition>
+         </div>
     </>
   );
 };

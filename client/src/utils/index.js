@@ -1,6 +1,6 @@
 import axios from "axios";
-// const API_URL = "https://hirego.onrender.com/api/v1";
-const API_URL = "http://localhost:8800/api/v1";
+// Override per environment via client/.env: VITE_API_URL=https://your-backend/api/v1
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8800/api/v1";
 
 export const API = axios.create({
   baseURL: API_URL,

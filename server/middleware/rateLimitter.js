@@ -1,4 +1,4 @@
-import redis from "../config/redis.js ";
+import redis from "../config/redis.js";
 
 export const rateLimiter = ({
   windowSec = 60,
@@ -8,7 +8,7 @@ export const rateLimiter = ({
   return async (req, res, next) => {
     try {
       const identifier =
-        req.user?.userId || req.ip; // user-based after auth, IP-based before
+        req.user?.userId || req.body?.user?.userId || req.ip; // user-based after auth (auth.js sets req.body.user), IP-based before
 
       const key = `${keyPrefix}:${identifier}`;
 

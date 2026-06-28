@@ -1,3 +1,4 @@
+import "dotenv/config"; // load env before modules that read it at import time (e.g. config/redis.js)
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";

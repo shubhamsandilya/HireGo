@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Jobs from "../models/jobModel.js";
 import Companies from "../models/companiesModel.js";
-import redis from "../Config/redis.js";
+import redis, { clearCache } from "../config/redis.js";
 
 export const createJob = async (req, res, next) => {
   try {
@@ -57,7 +57,7 @@ export const createJob = async (req, res, next) => {
     const updateCompany = await Companies.findByIdAndUpdate(id, company, {
       new: true,
     });
- await redis.del("jobs:*");
+    await clearCache("jobs:*", "companyJobs:*");
 
     res.status(200).json({
       success: true,
@@ -112,7 +112,7 @@ export const updateJob = async (req, res, next) => {
     };
 
     await Jobs.findByIdAndUpdate(jobId, jobPost, { new: true });
-await redis.del("jobs:*");
+    await clearCache("jobs:*", `job:${jobId}`, "companyJobs:*");
 
     res.status(200).json({
       success: true,
@@ -278,7 +278,7 @@ export const deleteJobPost = async (req, res, next) => {
     const { id } = req.params;
 
     await Jobs.findByIdAndDelete(id);
-await redis.del("jobs:*");
+    await clearCache("jobs:*", `job:${id}`, "companyJobs:*");
 
     res.status(200).send({
       success: true,

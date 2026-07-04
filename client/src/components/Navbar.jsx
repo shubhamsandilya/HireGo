@@ -58,7 +58,7 @@ function MenuList({ user, onClick }) {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="absolute z-50 right-2 mt-2 w-56 origin-top-right divide-y dividfe-gray-100 rounded-md bg-white shadow-lg focus:outline-none ">
+          <Menu.Items className="absolute z-50 right-2 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg focus:outline-none ">
             <div className="p-1 ">
               <Menu.Item>
                 {({ active }) => (
@@ -113,7 +113,6 @@ function MenuList({ user, onClick }) {
 }
 const Navbar = () => {
   const user = useSelector((state) => state.user);
-  console.log(user);
 
   const isLoggedIn = Boolean(user?.user?.token);
 const accountType = user?.user?.accountType; // "seeker" | "company" | undefined

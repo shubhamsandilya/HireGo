@@ -19,9 +19,16 @@ export const apiRequest = async ({ url, token, data, method }) => {
     });
     return result?.data;
   } catch (error) {
-    const err = error.response.data;
+    // Always resolve to a predictable shape so callers never crash.
+    // Covers API errors (error.response) AND network/timeouts (no response).
+    const err = error?.response?.data;
     console.log(error);
-    return { status: err.success, message: err.message };
+    return {
+      status: err?.success ?? "failed",
+      message:
+        err?.message ??
+        "Unable to reach the server. Please check your connection and try again.",
+    };
   }
 };
 

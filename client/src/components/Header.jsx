@@ -71,13 +71,11 @@ const Header = ({
               containerStyles="mt-4 md:mt-6 w-full md:w-auto focus:outline-none bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-full md:rounded-md text-sm "
             />
           </div>
-          <div className="hidden md:block md:w-1/2 relative">
+          <div className="hidden md:flex md:w-1/2 items-center justify-center p-6">
             <img
               src={HeroImage}
-              alt="Hero"
-              width={25}
-              height={25}
-              className="object-cover ml-[150px] w-1/2 h-1/2 rounded-lg"
+              alt="People finding jobs"
+              className="h-72 w-full max-w-md rounded-lg object-contain"
             />
           </div>
         </div>

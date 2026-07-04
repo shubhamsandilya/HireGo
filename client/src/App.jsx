@@ -20,7 +20,7 @@ import { useSelector } from "./redux/store";
 function Layout() {
   const { user } = useSelector((state) => state.user);
   const location = useLocation();
-  return user ? (
+  return user?.token ? (
     <Outlet />
   ) : (
     <Navigate to="user-auth" state={{ from: location }} replace />
@@ -59,7 +59,7 @@ function App() {
         <Route path="/applicants/:jobId" element={<Applicants />} />
         <Route path="/my-openings" element={<YourOpenings />} />
       </Routes>
-      {user && <Footer />}
+      {user?.token && <Footer />}
     </main>
   );
 }

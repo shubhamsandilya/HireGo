@@ -11,6 +11,8 @@ import TextInput from "./TextInput";
 import JobTypes from "./JobTypes";
 import ProfileRing from "./ProfileRing";
 import ResumePreview from "./ResumePreview";
+import ScoreGauge from "./ScoreGauge";
+import AiMatchCard from "./AiMatchCard";
 export {
   Navbar,
   Footer,
@@ -25,4 +27,6 @@ export {
   SignUp,
   ProfileRing,
   ResumePreview,
+  ScoreGauge,
+  AiMatchCard,
 };

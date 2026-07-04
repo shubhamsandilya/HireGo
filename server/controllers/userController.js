@@ -1,5 +1,6 @@
 import mongoose, { Mongoose } from "mongoose";
 import Users from "../models/userModel.js";
+import { clearCache } from "../config/redis.js";
 
 export const updateUser = async (req, res, next) => {
   const {
@@ -40,6 +41,8 @@ export const updateUser = async (req, res, next) => {
     if (skills !== undefined) update.skills = skills;
     if (experience !== undefined) update.experience = experience;
     const user = await Users.findByIdAndUpdate(id, update, { new: true });
+    // Profile changed → any cached AI match for this user is now stale.
+    await clearCache(`aimatch:${id}:*`);
     const token = user.createJWT();
     user.password = undefined;
     return res.status(200).json({

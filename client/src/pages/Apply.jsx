@@ -5,7 +5,7 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 import { FiUploadCloud } from "react-icons/fi";
 
 import { apiRequest, handleFileUpload, computeProfileCompletion } from "../utils";
-import { Loading, ProfileRing, ResumePreview } from "../components";
+import { Loading, ProfileRing, ResumePreview, AiMatchCard } from "../components";
 import success from "../assets/success.png";
 
 const Apply = () => {
@@ -158,6 +158,11 @@ const Apply = () => {
               Complete <AiOutlineArrowRight />
             </button>
           )}
+        </div>
+
+        {/* AI match suggestion */}
+        <div className="mt-4">
+          <AiMatchCard jobId={id} compact />
         </div>
 
         {/* Application form */}

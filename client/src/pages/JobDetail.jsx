@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
-import { Linkedin } from "../assets";
 import moment from "moment";
 import { AiOutlineSafetyCertificate } from "react-icons/ai";
 import { useNavigate, useParams } from "react-router-dom";
-import { jobs } from "../utils/data";
-import { CustomButton, JobCard, Loading } from "../components";
+import { CustomButton, JobCard, Loading, AiMatchCard } from "../components";
 import { useSelector } from "react-redux";
 import { apiRequest } from "../utils";
 
@@ -186,6 +184,13 @@ const JobDetail = () => {
                 </>
               )}
             </div>
+
+            {user?.accountType === "seeker" &&
+              user?._id !== job?.company?._id && (
+                <div className="mb-6">
+                  <AiMatchCard jobId={id} />
+                </div>
+              )}
 
             <div className="w-full">
               {user?._id === job?.company?._id ? (

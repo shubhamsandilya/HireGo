@@ -19,6 +19,19 @@ export const experience = [
   { title: "Over 6 Years", value: "6-60" },
 ];
 
+// Suggested skills shown in the profile editor. Users can also add custom ones.
+export const skillsList = [
+  "JavaScript", "TypeScript", "React", "Redux", "Next.js", "Node.js",
+  "Express", "MongoDB", "PostgreSQL", "MySQL", "GraphQL", "REST APIs",
+  "HTML", "CSS", "Tailwind CSS", "Sass", "Python", "Django", "Flask",
+  "Java", "Spring Boot", "C++", "C#", ".NET", "Go", "Rust", "PHP",
+  "Laravel", "Ruby on Rails", "AWS", "Google Cloud", "Azure", "Docker",
+  "Kubernetes", "CI/CD", "Git", "Linux", "Redis", "Kafka", "Microservices",
+  "System Design", "Data Structures", "Algorithms", "Machine Learning",
+  "Data Analysis", "SQL", "Figma", "UI/UX Design", "Product Management",
+  "Agile", "Scrum", "Communication", "Leadership", "Problem Solving",
+];
+
 export const popularSearch = [
   "Software Engineer",
   "Developer",

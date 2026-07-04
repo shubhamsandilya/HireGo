@@ -11,22 +11,22 @@ import { CustomButton, JobCard, ListBox, Loading } from "../components";
 import { apiRequest, updateURL } from "../utils";
 
 const JobCardSkeleton = () => (
-  <div className="h-[16rem] w-full animate-pulse rounded-lg bg-white p-4 shadow-md md:h-[18rem] md:w-[16rem] 2xl:w-[18rem]">
+  <div className="h-[16rem] w-full animate-pulse rounded-2xl border border-slate-100 bg-white px-5 py-5 shadow-sm md:h-[18rem] md:w-[16rem] 2xl:w-[18rem]">
     <div className="flex gap-3">
-      <div className="h-14 w-14 rounded-md bg-gray-200" />
+      <div className="h-14 w-14 rounded-xl bg-slate-200" />
       <div className="flex-1 space-y-2 py-2">
-        <div className="h-4 w-3/4 rounded bg-gray-200" />
-        <div className="h-3 w-1/2 rounded bg-gray-200" />
+        <div className="h-4 w-3/4 rounded bg-slate-200" />
+        <div className="h-3 w-1/2 rounded bg-slate-200" />
       </div>
     </div>
     <div className="mt-4 space-y-2">
-      <div className="h-3 rounded bg-gray-200" />
-      <div className="h-3 w-5/6 rounded bg-gray-200" />
-      <div className="h-3 w-2/3 rounded bg-gray-200" />
+      <div className="h-3 rounded bg-slate-200" />
+      <div className="h-3 w-5/6 rounded bg-slate-200" />
+      <div className="h-3 w-2/3 rounded bg-slate-200" />
     </div>
     <div className="mt-8 flex justify-between">
-      <div className="h-5 w-16 rounded bg-gray-200" />
-      <div className="h-4 w-12 rounded bg-gray-200" />
+      <div className="h-5 w-16 rounded bg-slate-200" />
+      <div className="h-4 w-12 rounded bg-slate-200" />
     </div>
   </div>
 );
@@ -245,7 +245,7 @@ const FindJobs = () => {
 
         <div className="flex gap-6 2xl:gap-10">
           {/* Desktop sidebar */}
-          <aside className="hidden h-fit w-1/4 rounded-lg bg-white p-5 shadow-sm md:block lg:w-1/5">
+          <aside className="hidden h-fit w-1/4 rounded-2xl border border-slate-100 bg-white p-5 shadow-sm md:block lg:w-1/5">
             <div className="mb-2 flex items-center justify-between">
               <p className="text-lg font-semibold text-slate-700">
                 Filter Search

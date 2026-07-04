@@ -1,4 +1,5 @@
 import { GoLocation } from "react-icons/go";
+import { BsArrowUpRight } from "react-icons/bs";
 import moment from "moment";
 import { Link } from "react-router-dom";
 
@@ -15,42 +16,49 @@ const JobCard = ({ job }) => {
   const description = detail?.desc || job?.desc || "";
 
   return (
-    <Link to={`/job-detail/${job?._id}`} className="w-full md:w-auto">
+    <Link to={`/job-detail/${job?._id}`} className="group w-full md:w-auto">
       <div
-        className="flex h-[16rem] w-full flex-col justify-between rounded-lg bg-white px-4 py-5 shadow-md transition
-        hover:-translate-y-1 hover:shadow-xl md:h-[18rem] md:w-[16rem] 2xl:w-[18rem]"
+        className="relative flex h-[16rem] w-full flex-col justify-between overflow-hidden rounded-2xl border border-slate-100 bg-white px-5 py-5 shadow-sm transition-all
+        duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-900/5 md:h-[18rem] md:w-[16rem] 2xl:w-[18rem]"
       >
-        <div className="flex gap-3">
+        {/* Accent bar revealed on hover */}
+        <span className="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 bg-gradient-to-r from-blue-600 to-cyan-500 transition-transform duration-300 group-hover:scale-x-100" />
+
+        <div className="flex items-start gap-3">
           <img
             src={logo || fallbackLogo}
             onError={(e) => {
               e.currentTarget.src = fallbackLogo;
             }}
             alt={companyName}
-            className="h-14 w-14 rounded-md object-cover"
+            className="h-14 w-14 shrink-0 rounded-xl border border-slate-100 object-cover"
           />
 
-          <div className="flex min-w-0 flex-col justify-center">
-            <p className="line-clamp-2 text-lg font-semibold leading-tight text-gray-900">
+          <div className="flex min-w-0 flex-col">
+            <p className="line-clamp-2 text-base font-semibold leading-tight text-slate-900 transition-colors group-hover:text-blue-700">
               {job?.jobTitle}
             </p>
-            <span className="mt-1 flex items-center gap-1 text-sm text-gray-600">
-              <GoLocation className="text-slate-700" />
+            <span className="mt-0.5 truncate text-sm font-medium text-slate-500">
+              {companyName}
+            </span>
+            <span className="mt-1 flex items-center gap-1 text-xs text-slate-500">
+              <GoLocation className="text-slate-400" />
               {job?.location || "Remote"}
             </span>
           </div>
         </div>
 
-        <p className="line-clamp-3 py-3 text-sm text-gray-600">
+        <p className="line-clamp-3 py-3 text-sm leading-relaxed text-slate-500">
           {description ? description : "No description provided."}
         </p>
 
-        <div className="flex items-center justify-between">
-          <span className="rounded bg-[#1d4fd826] px-2 py-0.5 text-sm font-semibold text-[#1d4fd8]">
+        <div className="flex items-center justify-between border-t border-slate-100 pt-3">
+          <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
             {job?.jobType || "Full-Time"}
           </span>
-          <span className="text-sm text-gray-500">
+          <span className="flex items-center gap-1 text-xs text-slate-400">
             {job?.createdAt ? moment(job.createdAt).fromNow() : ""}
+            <BsArrowUpRight className="text-blue-600 opacity-0 transition-opacity group-hover:opacity-100" />
           </span>
         </div>
       </div>

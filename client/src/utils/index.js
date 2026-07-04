@@ -47,6 +47,30 @@ export const handleFileUpload = async (uploadFile) => {
   }
 };
 
+// --- Profile completion -----------------------------------------------------
+// A single source of truth for "how complete is this seeker's profile", used
+// by the profile page ring and the apply-page suggestion.
+const hasValue = (v) =>
+  Array.isArray(v) ? v.length > 0 : Boolean(v && String(v).trim());
+
+export const profileChecklist = (user) => [
+  { key: "photo", label: "Add a profile photo", done: hasValue(user?.profileUrl) },
+  { key: "jobTitle", label: "Add your headline / job title", done: hasValue(user?.jobTitle) },
+  { key: "location", label: "Add your location", done: hasValue(user?.location) },
+  { key: "contact", label: "Add a contact number", done: hasValue(user?.contact) },
+  { key: "about", label: "Write a professional summary", done: hasValue(user?.about) },
+  { key: "skills", label: "Add at least 3 skills", done: (user?.skills?.length || 0) >= 3 },
+  { key: "experience", label: "Add work experience", done: hasValue(user?.experience) },
+  { key: "cv", label: "Upload your resume", done: hasValue(user?.cvUrl) },
+];
+
+export const computeProfileCompletion = (user) => {
+  const items = profileChecklist(user);
+  const done = items.filter((i) => i.done).length;
+  const percent = Math.round((done / items.length) * 100);
+  return { percent, items, done, total: items.length };
+};
+
 export const updateURL = ({
   pageNum,
   query,

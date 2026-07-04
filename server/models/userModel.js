@@ -33,6 +33,21 @@ const userSchema = new mongoose.Schema(
     cvUrl: { type: String },
     jobTitle: { type: String },
     about: { type: String },
+    skills: { type: [String], default: [] },
+    experience: {
+      type: [
+        {
+          title: { type: String },
+          company: { type: String },
+          location: { type: String },
+          startDate: { type: String },
+          endDate: { type: String },
+          currentlyWorking: { type: Boolean, default: false },
+          description: { type: String },
+        },
+      ],
+      default: [],
+    },
   },
   { timestamps: true }
 );

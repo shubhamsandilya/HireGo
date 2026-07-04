@@ -9,12 +9,15 @@ export const updateUser = async (req, res, next) => {
     contact,
     location,
     profileUrl,
+    cvUrl,
     jobTitle,
     about,
+    skills,
+    experience,
   } = req.body;
   try {
     if (!firstName || !lastName  || !contact || !jobTitle || !about) {
-      next("Please provide all required fields");
+      return next("Please provide all required fields");
     }
     const id = req.body.user.userId;
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -31,6 +34,11 @@ export const updateUser = async (req, res, next) => {
       about,
       _id: id,
     };
+    // Only overwrite these when the client actually sends them, so a partial
+    // update never wipes an existing resume / skills / experience list.
+    if (cvUrl !== undefined) update.cvUrl = cvUrl;
+    if (skills !== undefined) update.skills = skills;
+    if (experience !== undefined) update.experience = experience;
     const user = await Users.findByIdAndUpdate(id, update, { new: true });
     const token = user.createJWT();
     user.password = undefined;

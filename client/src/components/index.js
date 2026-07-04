@@ -9,6 +9,8 @@ import CompanyCard from "./CompanyCard";
 import Loading from "./Loading";
 import TextInput from "./TextInput";
 import JobTypes from "./JobTypes";
+import ProfileRing from "./ProfileRing";
+import ResumePreview from "./ResumePreview";
 export {
   Navbar,
   Footer,
@@ -21,4 +23,6 @@ export {
   Header,
   CustomButton,
   SignUp,
+  ProfileRing,
+  ResumePreview,
 };

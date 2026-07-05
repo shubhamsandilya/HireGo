@@ -1,8 +1,7 @@
-import { Footer, Navbar,SignUp } from "./components";
+import { Footer, Navbar, SignUp, Chat } from "./components";
 import { Outlet, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import {
   About,
-  AuthPage,
   Companies,
   CompanyProfile,
   FindJobs,
@@ -32,12 +31,15 @@ function App() {
     <main>
       <Navbar />
       <Routes>
+        {/* Public — guests can browse jobs, but not apply */}
+        <Route path="/" element={<Navigate to="/find-jobs" replace={true} />} />
+        <Route path="/find-jobs" element={<FindJobs />} />
+        <Route path="/job-detail/:id" element={<JobDetail />} />
+        <Route path="/about-us" element={<About />} />
+        <Route path="/user-auth" element={<SignUp />} />
+
+        {/* Auth-gated — everything that acts on a user's account */}
         <Route element={<Layout />}>
-          <Route
-            path="/"
-            element={<Navigate to="/find-jobs" replace={true} />}
-          />
-          <Route path="/find-jobs" element={<FindJobs />} />
           <Route path="/companies" element={<Companies />} />
           <Route
             path={
@@ -50,16 +52,16 @@ function App() {
           <Route path="/company-profile" element={<CompanyProfile />} />
           <Route path="/company-profile/:id" element={<CompanyProfile />} />
           <Route path="/upload-job" element={<UploadJobs />} />
-          <Route path="/job-detail/:id" element={<JobDetail />} />
+          <Route path="/apply-page/:id" element={<Apply />} />
+          <Route path="/apply-history" element={<ApplyHistory />} />
+          <Route path="/applicants/:jobId" element={<Applicants />} />
+          <Route path="/my-openings" element={<YourOpenings />} />
         </Route>
-        <Route path="/about-us" element={<About />} />
-        <Route path="/user-auth" element={<SignUp />} />
-        <Route path="/apply-page/:id" element={<Apply />} />
-        <Route path="/apply-history" element={<ApplyHistory />} />
-        <Route path="/applicants/:jobId" element={<Applicants />} />
-        <Route path="/my-openings" element={<YourOpenings />} />
       </Routes>
       {user?.token && <Footer />}
+      {/* Global assistant — appears on every page; becomes job-aware on
+          /job-detail/:id by reading the URL inside the component. */}
+      {user?.token && <Chat />}
     </main>
   );
 }

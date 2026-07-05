@@ -17,6 +17,19 @@ const EMAIL_PATTERN = {
   message: "Enter a valid email address",
 };
 
+// Demo accounts shown on the login page. Values come from client/.env so the
+// real credentials aren't hard-coded. A card only renders if its email is set.
+const GUEST_ACCOUNTS = {
+  seeker: {
+    email: import.meta.env.VITE_GUEST_SEEKER_EMAIL,
+    password: import.meta.env.VITE_GUEST_SEEKER_PASSWORD,
+  },
+  company: {
+    email: import.meta.env.VITE_GUEST_COMPANY_EMAIL,
+    password: import.meta.env.VITE_GUEST_COMPANY_PASSWORD,
+  },
+};
+
 const SignUp = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -71,6 +84,31 @@ const SignUp = () => {
     }
 
     toast.success(res?.message || "Signed in successfully");
+    const userInfo = { token: res?.token, ...res?.user };
+    dispatch(Login(userInfo));
+    localStorage.setItem("userInfo", JSON.stringify(userInfo));
+    navigate(from, { replace: true });
+  };
+
+  // One-click sign in with a demo account (seeker or company).
+  const loginAsGuest = async (type) => {
+    const creds = GUEST_ACCOUNTS[type];
+    if (!creds?.email || !creds?.password) {
+      toast.error("Guest login isn't configured.");
+      return;
+    }
+    setErrMsg("");
+    const url = type === "seeker" ? "auth/login" : "companies/login";
+    const res = await apiRequest({ url, data: creds, method: "POST" });
+
+    if (!res || res.status === "failed") {
+      const message = res?.message || "Guest login failed. Please try again.";
+      setErrMsg(message);
+      toast.error(message);
+      return;
+    }
+
+    toast.success("Signed in as guest");
     const userInfo = { token: res?.token, ...res?.user };
     dispatch(Login(userInfo));
     localStorage.setItem("userInfo", JSON.stringify(userInfo));
@@ -262,6 +300,60 @@ const SignUp = () => {
                 containerStyles="mt-6 w-full rounded-lg bg-blue-600 px-8 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
               />
             </form>
+
+            {/* Guest / demo accounts — sign-in mode only */}
+            {!isRegister &&
+              (GUEST_ACCOUNTS.seeker.email || GUEST_ACCOUNTS.company.email) && (
+                <div className="mt-6">
+                  <div className="flex items-center">
+                    <div className="flex-grow border-t border-gray-200" />
+                    <span className="mx-3 text-xs uppercase tracking-wide text-gray-400">
+                      or explore with a demo account
+                    </span>
+                    <div className="flex-grow border-t border-gray-200" />
+                  </div>
+
+                  <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    {GUEST_ACCOUNTS.seeker.email && (
+                      <button
+                        type="button"
+                        onClick={() => loginAsGuest("seeker")}
+                        className="rounded-lg border border-gray-200 p-3 text-left transition hover:border-blue-400 hover:bg-blue-50/40"
+                      >
+                        <span className="flex items-center gap-2 text-sm font-medium text-gray-800">
+                          <BiBriefcaseAlt2 className="h-4 w-4 text-blue-600" />
+                          Guest Job Seeker
+                        </span>
+                        <span className="mt-1 block truncate text-xs text-gray-500">
+                          {GUEST_ACCOUNTS.seeker.email}
+                        </span>
+                        <span className="block text-xs text-gray-400">
+                          password: {GUEST_ACCOUNTS.seeker.password}
+                        </span>
+                      </button>
+                    )}
+
+                    {GUEST_ACCOUNTS.company.email && (
+                      <button
+                        type="button"
+                        onClick={() => loginAsGuest("company")}
+                        className="rounded-lg border border-gray-200 p-3 text-left transition hover:border-blue-400 hover:bg-blue-50/40"
+                      >
+                        <span className="flex items-center gap-2 text-sm font-medium text-gray-800">
+                          <BiBuildings className="h-4 w-4 text-blue-600" />
+                          Guest Company
+                        </span>
+                        <span className="mt-1 block truncate text-xs text-gray-500">
+                          {GUEST_ACCOUNTS.company.email}
+                        </span>
+                        <span className="block text-xs text-gray-400">
+                          password: {GUEST_ACCOUNTS.company.password}
+                        </span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
 
             <p className="mt-6 text-center text-sm text-gray-600">
               {isRegister

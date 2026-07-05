@@ -13,6 +13,7 @@ import ProfileRing from "./ProfileRing";
 import ResumePreview from "./ResumePreview";
 import ScoreGauge from "./ScoreGauge";
 import AiMatchCard from "./AiMatchCard";
+import Chat from "./Chat";
 export {
   Navbar,
   Footer,
@@ -29,4 +30,5 @@ export {
   ResumePreview,
   ScoreGauge,
   AiMatchCard,
+  Chat,
 };

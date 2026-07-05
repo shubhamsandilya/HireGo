@@ -49,6 +49,14 @@ const JobDetail = () => {
   };
   const navigate = useNavigate();
   const applyFrom = () => {
+    // Guests can browse, but applying requires an account. Send them to sign in
+    // and bring them back to the apply page afterwards.
+    if (!user?.token) {
+      navigate("/user-auth", {
+        state: { from: { pathname: `/apply-page/${id}` } },
+      });
+      return;
+    }
     navigate(`/apply-page/${id}`);
   };
   // console.log(job);
@@ -131,6 +139,13 @@ const JobDetail = () => {
               </div>
             </div>
 
+            {user?.accountType === "seeker" &&
+              user?._id !== job?.company?._id && (
+                <div className="mb-8">
+                  <AiMatchCard jobId={id} />
+                </div>
+              )}
+
             <div className="w-full flex gap-4 py-5">
               <CustomButton
                 onClick={() => setSelected("0")}
@@ -184,13 +199,6 @@ const JobDetail = () => {
                 </>
               )}
             </div>
-
-            {user?.accountType === "seeker" &&
-              user?._id !== job?.company?._id && (
-                <div className="mb-6">
-                  <AiMatchCard jobId={id} />
-                </div>
-              )}
 
             <div className="w-full">
               {user?._id === job?.company?._id ? (

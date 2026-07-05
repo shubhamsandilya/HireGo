@@ -7,11 +7,13 @@ export const postApplication = async (req, res, next) => {
     req?.body;
   //   console.log(req?.body);
   console.log(req?.params.id);
-  if (!fullName || !phoneNumber || !coverLetter || !email || !resume)
-    res
-      .status(401)
-      .json({ success: false, Message: "All fileds are mandatory" });
-  console.log("first");
+  if (!fullName || !phoneNumber || !coverLetter || !email || !resume) {
+    // `return` — without it the handler fell through and tried to create the
+    // application anyway, then sent a second response (headers-already-sent crash).
+    return res
+      .status(400)
+      .json({ success: false, message: "All fields are mandatory" });
+  }
   try {
     const result = await application.create({
       name: fullName,
@@ -93,7 +95,19 @@ export const getAplication = async (req, res, next) => {
 export const getApplicants = async (req, res) => {
   try {
     const jobId = req.params.jobId;
-    console.log(req.params);
+    const userId = req.body.user.userId;
+
+    // RBAC: only the company that owns this job may see its applicants — this
+    // response contains applicants' names, emails and phone numbers.
+    const jobDoc = await Jobs.findById(jobId).select("company");
+    if (!jobDoc) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+    if (String(jobDoc.company) !== String(userId)) {
+      return res
+        .status(403)
+        .json({ message: "You can only view applicants for your own jobs." });
+    }
 
     // Find the job by ID and populate the applications
     const job = await application

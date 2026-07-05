@@ -115,6 +115,21 @@ export const updateJob = async (req, res, next) => {
     if (!mongoose.Types.ObjectId.isValid(id))
       return res.status(404).send(`No Company with id: ${id}`);
 
+    // RBAC: only the company that OWNS this job may edit it. Without this,
+    // any authenticated account could edit anyone's posting.
+    const existing = await Jobs.findById(jobId).select("company");
+    if (!existing) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Job post not found" });
+    }
+    if (String(existing.company) !== String(id)) {
+      return res.status(403).json({
+        success: false,
+        message: "You can only edit your own job posts.",
+      });
+    }
+
     // The job text changed, so its old embedding no longer describes it.
     // Regenerate the fingerprint from the NEW text — using the exact same
     // recipe as createJob — so search keeps matching the current content.
@@ -320,10 +335,12 @@ export const getJobById = async (req, res, next) => {
       console.log("cached data served for job by id");
       return res.status(200).json(JSON.parse(cachedData));
     }
-    const job = await Jobs.findById({ _id: id }).populate({
-      path: "company",
-      select: "-password",
-    });
+    const job = await Jobs.findById({ _id: id })
+      .select("-embedding")
+      .populate({
+        path: "company",
+        select: "-password",
+      });
 
     if (!job) {
       return res.status(200).send({
@@ -341,6 +358,7 @@ export const getJobById = async (req, res, next) => {
     };
 
     let queryResult = Jobs.find(searchQuery)
+      .select("-embedding")
       .populate({
         path: "company",
         select: "-password",
@@ -370,6 +388,21 @@ export const getJobById = async (req, res, next) => {
 export const deleteJobPost = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const userId = req.body.user.userId;
+
+    // RBAC: only the owning company may delete its job post.
+    const job = await Jobs.findById(id).select("company");
+    if (!job) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Job post not found" });
+    }
+    if (String(job.company) !== String(userId)) {
+      return res.status(403).json({
+        success: false,
+        message: "You can only delete your own job posts.",
+      });
+    }
 
     await Jobs.findByIdAndDelete(id);
     await clearCache("jobs:*", `job:${id}`, "companyJobs:*");
@@ -395,10 +428,12 @@ export const getJobByCompanyId = async (req, res, next) => {
     return res.status(200).json(JSON.parse(cachedData));
   }
   try {
-    const result = await Jobs.find({ company: id }).populate({
-      path: "company",
-      select: " profileUrl",
-    });
+    const result = await Jobs.find({ company: id })
+      .select("-embedding")
+      .populate({
+        path: "company",
+        select: " profileUrl",
+      });
     const response = {
       message: "Jobs fetched successfully",
       success: true,

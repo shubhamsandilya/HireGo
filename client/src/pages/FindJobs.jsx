@@ -321,7 +321,7 @@ const FindJobs = () => {
                 ))}
 
               {!showInitialSkeleton &&
-                data.map((job, index) => {
+                data?.map((job, index) => {
                   const newJob = {
                     name: job?.company?.name,
                     logo: job?.company?.profileUrl,
@@ -332,7 +332,7 @@ const FindJobs = () => {
             </div>
 
             {/* Empty state */}
-            {!isFetching && data.length === 0 && (
+            {!isFetching && data?.length === 0 && (
               <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
                 <BiBriefcaseAlt2 className="text-5xl text-gray-300" />
                 <p className="font-semibold text-gray-700">No jobs found</p>

@@ -100,7 +100,13 @@ const Header = ({
 
             {/* Unified search bar */}
             <form
-              onSubmit={handleClick}
+              onSubmit={(e) => {
+                // Stop the native submit synchronously — handleClick is
+                // debounced, so its own preventDefault fires too late to
+                // block the page reload (which would drop the search query).
+                e.preventDefault();
+                handleClick(e);
+              }}
               className="mx-auto mt-8 flex max-w-2xl flex-col gap-2 rounded-2xl bg-white p-2 shadow-xl shadow-blue-900/5 ring-1 ring-black/5 sm:flex-row sm:items-center lg:mx-0"
             >
               <SearchInput

@@ -29,7 +29,9 @@ const companySchema = new Schema({
 
 // middelwares
 companySchema.pre("save", async function () {
-  if (!this.isModified) return;
+  // isModified is a method — call it, otherwise this guard never fires and
+  // every save re-hashes an already-hashed password (breaking login).
+  if (!this.isModified("password")) return;
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });

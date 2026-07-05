@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "nodemon server.js",
+    "backfill:embeddings": "node scripts/backfillEmbeddings.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

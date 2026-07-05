@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
@@ -18,7 +18,12 @@ import TextInput from "../components/TextInput";
 import ProfileRing from "../components/ProfileRing";
 import ResumePreview from "../components/ResumePreview";
 
-import { apiRequest, handleFileUpload, computeProfileCompletion } from "../utils";
+import {
+  apiRequest,
+  handleFileUpload,
+  computeProfileCompletion,
+  avatarUrl,
+} from "../utils";
 import { skillsList } from "../utils/data";
 import { Login } from "../redux/userSlice";
 import { NoProfile } from "../assets";
@@ -101,7 +106,7 @@ const SkillsEditor = ({ skills, setSkills }) => {
         className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
       />
 
-      {input && suggestions.length > 0 && (
+      {input.trim() && (
         <div className="mt-2 flex flex-wrap gap-2">
           {suggestions.map((s) => (
             <button
@@ -113,6 +118,22 @@ const SkillsEditor = ({ skills, setSkills }) => {
               + {s}
             </button>
           ))}
+
+          {/* Add a custom skill that isn't in our suggestion list */}
+          {!skillsList.some(
+            (s) => s.toLowerCase() === input.trim().toLowerCase()
+          ) &&
+            !skills.some(
+              (s) => s.toLowerCase() === input.trim().toLowerCase()
+            ) && (
+              <button
+                type="button"
+                onClick={() => addSkill(input)}
+                className="rounded-full border border-blue-300 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 hover:bg-blue-100"
+              >
+                + Add “{input.trim()}”
+              </button>
+            )}
         </div>
       )}
     </div>
@@ -235,6 +256,21 @@ const UserForm = ({ profile, open, setOpen }) => {
   const [experience, setExperience] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
+
+  // Live preview: the freshly-picked file, else the saved photo, else the
+  // generated fallback avatar. Object URLs are revoked on change/unmount.
+  const imagePreview = useMemo(
+    () =>
+      profileImage
+        ? URL.createObjectURL(profileImage)
+        : profile?.profileUrl || avatarUrl(profile),
+    [profileImage, profile]
+  );
+  useEffect(() => {
+    return () => {
+      if (profileImage) URL.revokeObjectURL(imagePreview);
+    };
+  }, [imagePreview, profileImage]);
 
   // Re-hydrate the form each time the modal opens.
   useEffect(() => {
@@ -441,12 +477,26 @@ const UserForm = ({ profile, open, setOpen }) => {
                         <label className="mb-1 block text-sm text-gray-600">
                           Profile Picture
                         </label>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="text-sm"
-                          onChange={(e) => setProfileImage(e.target.files[0])}
-                        />
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={imagePreview}
+                            alt="Profile preview"
+                            onError={(e) => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = NoProfile;
+                            }}
+                            className="h-16 w-16 rounded-full object-cover ring-1 ring-slate-200"
+                          />
+                          <label className="cursor-pointer rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:border-blue-400 hover:text-blue-600">
+                            {profileImage ? "Change photo" : "Upload photo"}
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => setProfileImage(e.target.files[0])}
+                            />
+                          </label>
+                        </div>
                       </div>
                       <div>
                         <label className="mb-1 block text-sm text-gray-600">
@@ -555,7 +605,7 @@ const UserProfile = () => {
             <div className="-mt-14 flex flex-col items-center gap-4 md:flex-row md:items-end md:justify-between">
               <div className="flex flex-col items-center gap-4 md:flex-row md:items-end">
                 <ProfileRing
-                  src={profile?.profileUrl || NoProfile}
+                  src={avatarUrl(profile)}
                   alt={profile?.firstName}
                   percent={percent}
                   size={128}

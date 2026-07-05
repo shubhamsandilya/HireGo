@@ -142,6 +142,20 @@ export const computeProfileCompletion = (user) => {
   return { percent, items, done, total: items.length };
 };
 
+// Avatar with a graceful fallback: the uploaded photo if present, otherwise a
+// deterministic "random-looking" avatar seeded by the person's name/email — so
+// it stays the SAME on every render for a given user (not random each time).
+export const avatarUrl = (user) => {
+  if (user?.profileUrl) return user.profileUrl;
+  const seed = encodeURIComponent(
+    [user?.firstName, user?.lastName].filter(Boolean).join(" ") ||
+      user?.name ||
+      user?.email ||
+      "HireGo user"
+  );
+  return `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`;
+};
+
 export const updateURL = ({
   pageNum,
   query,

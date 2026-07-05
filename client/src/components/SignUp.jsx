@@ -151,6 +151,66 @@ const SignUp = () => {
                 : "Sign in to continue to HireGo."}
             </p>
 
+            {/* Highlighted demo access — one-click sign in with a ready account
+                so visitors can immediately try AI Match, the chatbot, etc. */}
+            {!isRegister &&
+              (GUEST_ACCOUNTS.seeker.email || GUEST_ACCOUNTS.company.email) && (
+                <div className="mt-5 rounded-xl border-2 border-blue-300 bg-gradient-to-br from-blue-50 to-cyan-50 p-4 shadow-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex animate-pulse items-center rounded-full bg-blue-600 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                      Demo
+                    </span>
+                    <p className="text-sm font-semibold text-slate-800">
+                      Just exploring? Jump straight in 🚀
+                    </p>
+                  </div>
+                  <p className="mt-1 text-xs text-slate-500">
+                    One click signs you into a ready-made account — try AI Match,
+                    the assistant chatbot, and everything else. No signup needed.
+                  </p>
+
+                  <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    {GUEST_ACCOUNTS.seeker.email && (
+                      <button
+                        type="button"
+                        onClick={() => loginAsGuest("seeker")}
+                        className="rounded-lg border border-blue-300 bg-white px-3 py-2 text-left shadow-sm transition hover:border-blue-500 hover:shadow"
+                      >
+                        <span className="flex items-center gap-2 text-sm font-semibold text-blue-700">
+                          <BiBriefcaseAlt2 className="h-4 w-4" />
+                          Guest Job Seeker
+                        </span>
+                        <span className="mt-0.5 block truncate text-[11px] text-slate-500">
+                          {GUEST_ACCOUNTS.seeker.email}
+                        </span>
+                        <span className="block text-[11px] text-slate-400">
+                          pw: {GUEST_ACCOUNTS.seeker.password}
+                        </span>
+                      </button>
+                    )}
+
+                    {GUEST_ACCOUNTS.company.email && (
+                      <button
+                        type="button"
+                        onClick={() => loginAsGuest("company")}
+                        className="rounded-lg border border-blue-300 bg-white px-3 py-2 text-left shadow-sm transition hover:border-blue-500 hover:shadow"
+                      >
+                        <span className="flex items-center gap-2 text-sm font-semibold text-blue-700">
+                          <BiBuildings className="h-4 w-4" />
+                          Guest Company
+                        </span>
+                        <span className="mt-0.5 block truncate text-[11px] text-slate-500">
+                          {GUEST_ACCOUNTS.company.email}
+                        </span>
+                        <span className="block text-[11px] text-slate-400">
+                          pw: {GUEST_ACCOUNTS.company.password}
+                        </span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+
             {/* Account type toggle */}
             <div className="mt-6 grid grid-cols-2 gap-2 rounded-lg bg-gray-100 p-1">
               <button
@@ -300,60 +360,6 @@ const SignUp = () => {
                 containerStyles="mt-6 w-full rounded-lg bg-blue-600 px-8 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
               />
             </form>
-
-            {/* Guest / demo accounts — sign-in mode only */}
-            {!isRegister &&
-              (GUEST_ACCOUNTS.seeker.email || GUEST_ACCOUNTS.company.email) && (
-                <div className="mt-6">
-                  <div className="flex items-center">
-                    <div className="flex-grow border-t border-gray-200" />
-                    <span className="mx-3 text-xs uppercase tracking-wide text-gray-400">
-                      or explore with a demo account
-                    </span>
-                    <div className="flex-grow border-t border-gray-200" />
-                  </div>
-
-                  <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    {GUEST_ACCOUNTS.seeker.email && (
-                      <button
-                        type="button"
-                        onClick={() => loginAsGuest("seeker")}
-                        className="rounded-lg border border-gray-200 p-3 text-left transition hover:border-blue-400 hover:bg-blue-50/40"
-                      >
-                        <span className="flex items-center gap-2 text-sm font-medium text-gray-800">
-                          <BiBriefcaseAlt2 className="h-4 w-4 text-blue-600" />
-                          Guest Job Seeker
-                        </span>
-                        <span className="mt-1 block truncate text-xs text-gray-500">
-                          {GUEST_ACCOUNTS.seeker.email}
-                        </span>
-                        <span className="block text-xs text-gray-400">
-                          password: {GUEST_ACCOUNTS.seeker.password}
-                        </span>
-                      </button>
-                    )}
-
-                    {GUEST_ACCOUNTS.company.email && (
-                      <button
-                        type="button"
-                        onClick={() => loginAsGuest("company")}
-                        className="rounded-lg border border-gray-200 p-3 text-left transition hover:border-blue-400 hover:bg-blue-50/40"
-                      >
-                        <span className="flex items-center gap-2 text-sm font-medium text-gray-800">
-                          <BiBuildings className="h-4 w-4 text-blue-600" />
-                          Guest Company
-                        </span>
-                        <span className="mt-1 block truncate text-xs text-gray-500">
-                          {GUEST_ACCOUNTS.company.email}
-                        </span>
-                        <span className="block text-xs text-gray-400">
-                          password: {GUEST_ACCOUNTS.company.password}
-                        </span>
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )}
 
             <p className="mt-6 text-center text-sm text-gray-600">
               {isRegister

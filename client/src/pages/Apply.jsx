@@ -4,7 +4,12 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import { FiUploadCloud } from "react-icons/fi";
 
-import { apiRequest, handleFileUpload, computeProfileCompletion } from "../utils";
+import {
+  apiRequest,
+  handleFileUpload,
+  computeProfileCompletion,
+  avatarUrl,
+} from "../utils";
 import { Loading, ProfileRing, ResumePreview, AiMatchCard } from "../components";
 import success from "../assets/success.png";
 
@@ -126,7 +131,7 @@ const Apply = () => {
         {/* Applicant + profile-completion suggestion */}
         <div className="mt-5 flex items-center gap-4 rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
           <ProfileRing
-            src={profile?.profileUrl}
+            src={avatarUrl(profile)}
             alt={profile?.firstName}
             percent={percent}
             size={72}

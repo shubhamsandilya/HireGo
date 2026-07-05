@@ -128,7 +128,7 @@ const AiMatchCard = ({ jobId, compact = false }) => {
         <div className="min-w-0">
           <p className="font-semibold text-slate-800">{bandLabel(matchScore)}</p>
           {summary && (
-            <p className="line-clamp-2 text-sm text-slate-500">{summary}</p>
+            <p className="text-sm leading-relaxed text-slate-500">{summary}</p>
           )}
         </div>
       </div>

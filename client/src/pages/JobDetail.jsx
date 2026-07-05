@@ -49,14 +49,6 @@ const JobDetail = () => {
   };
   const navigate = useNavigate();
   const applyFrom = () => {
-    // Guests can browse, but applying requires an account. Send them to sign in
-    // and bring them back to the apply page afterwards.
-    if (!user?.token) {
-      navigate("/user-auth", {
-        state: { from: { pathname: `/apply-page/${id}` } },
-      });
-      return;
-    }
     navigate(`/apply-page/${id}`);
   };
   // console.log(job);

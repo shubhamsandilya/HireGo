@@ -61,6 +61,10 @@ const ProfileRing = ({
       <img
         src={src || NoProfile}
         alt={alt}
+        onError={(e) => {
+          e.currentTarget.onerror = null;
+          e.currentTarget.src = NoProfile;
+        }}
         className="absolute rounded-full object-cover ring-1 ring-black/5"
         style={{
           width: imgSize,

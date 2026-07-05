@@ -31,15 +31,16 @@ function App() {
     <main>
       <Navbar />
       <Routes>
-        {/* Public — guests can browse jobs, but not apply */}
-        <Route path="/" element={<Navigate to="/find-jobs" replace={true} />} />
-        <Route path="/find-jobs" element={<FindJobs />} />
-        <Route path="/job-detail/:id" element={<JobDetail />} />
-        <Route path="/about-us" element={<About />} />
+        {/* Public — only the login page */}
         <Route path="/user-auth" element={<SignUp />} />
 
-        {/* Auth-gated — everything that acts on a user's account */}
+        {/* Everything else requires login. Guests are redirected to /user-auth,
+            where the prominent demo accounts let them jump straight in. */}
         <Route element={<Layout />}>
+          <Route path="/" element={<Navigate to="/find-jobs" replace={true} />} />
+          <Route path="/find-jobs" element={<FindJobs />} />
+          <Route path="/job-detail/:id" element={<JobDetail />} />
+          <Route path="/about-us" element={<About />} />
           <Route path="/companies" element={<Companies />} />
           <Route
             path={

@@ -2,7 +2,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 import mongoose from "mongoose";
 import Jobs from "../models/jobModel.js";
 import Users from "../models/userModel.js";
-import redis from "../config/redis.js";
+import { cacheGet, cacheSetex } from "../config/redis.js";
 import { createEmbedding } from "../services/embeddingService.js";
 
 const google = new GoogleGenAI({
@@ -42,7 +42,7 @@ export const matchJobByProfile = async (req, res) => {
 
     // Serve from cache when we've already matched this user against this job.
     const cacheKey = `aimatch:${userId}:${jobId}`;
-    const cached = await redis.get(cacheKey);
+    const cached = await cacheGet(cacheKey);
     if (cached) {
       return res
         .status(200)
@@ -101,7 +101,7 @@ export const matchJobByProfile = async (req, res) => {
     });
 
     const aiResponse = JSON.parse(response.text);
-    await redis.set(cacheKey, JSON.stringify(aiResponse), "EX", CACHE_TTL);
+    await cacheSetex(cacheKey, CACHE_TTL, JSON.stringify(aiResponse));
 
     return res.status(200).json({ aiResponse, cached: false });
   } catch (error) {

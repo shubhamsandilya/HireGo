@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Jobs from "../models/jobModel.js";
 import Companies from "../models/companiesModel.js";
-import redis, { clearCache } from "../config/redis.js";
+import { clearCache, cacheGet, cacheSetex } from "../config/redis.js";
 import { createEmbedding } from "../services/embeddingService.js";
 
 // Minimum vector-search relevance (Atlas score, ~0 = unrelated, ~1 = very close).
@@ -169,7 +169,7 @@ export const getJobPosts = async (req, res, next) => {
 
     // 🔑 Cache key for this exact query
     const cacheKey = `jobs:${JSON.stringify(req.query)}`;
-    const cachedData = await redis.get(cacheKey);
+    const cachedData = await cacheGet(cacheKey);
     if (cachedData) {
       return res.status(200).json(JSON.parse(cachedData));
     }
@@ -318,7 +318,7 @@ export const getJobPosts = async (req, res, next) => {
     };
 
     // ✅ Store in Redis (TTL = 120 sec)
-    await redis.setex(cacheKey, 120, JSON.stringify(response));
+    await cacheSetex(cacheKey, 120, JSON.stringify(response));
     res.status(200).json(response);
   } catch (error) {
     console.log(error);
@@ -330,7 +330,7 @@ export const getJobById = async (req, res, next) => {
   try {
     const { id } = req.params;
     const jobCacheKey= `job:${id}`;
-    const cachedData = await redis.get(jobCacheKey);
+    const cachedData = await cacheGet(jobCacheKey);
     if (cachedData) {
       console.log("cached data served for job by id");
       return res.status(200).json(JSON.parse(cachedData));
@@ -374,7 +374,7 @@ export const getJobById = async (req, res, next) => {
       similarJobs,
     };
     // ✅ Store in Redis (TTL = 120 sec)
-    await redis.setex(jobCacheKey, 120, JSON.stringify(response));
+    await cacheSetex(jobCacheKey, 120, JSON.stringify(response));
 
     res.status(200).json({
 ...response
@@ -422,7 +422,7 @@ export const getJobByCompanyId = async (req, res, next) => {
   console.log(id);
   // console.log(req?.query);
   const cacheKey = `companyJobs:${id}`;
-  const cachedData = await redis.get(cacheKey);
+  const cachedData = await cacheGet(cacheKey);
   if (cachedData) {
     console.log("cached data served for company jobs");
     return res.status(200).json(JSON.parse(cachedData));
@@ -440,7 +440,7 @@ export const getJobByCompanyId = async (req, res, next) => {
       data: result,
     };
     // ✅ Store in Redis (TTL = 120 sec)
-    await redis.setex(cacheKey, 120, JSON.stringify(response));
+    await cacheSetex(cacheKey, 120, JSON.stringify(response));
     return res.status(201).json(response);
   } catch (error) {
     next(error);

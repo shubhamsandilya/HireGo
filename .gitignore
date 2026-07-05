@@ -10,8 +10,8 @@ node_modules/
 
 # ---- Lock files ----
 # (kept ignored per project preference — see note: normally lock files ARE committed)
-client/package-lock.json
-server/package-lock.json
+# client/package-lock.json
+# server/package-lock.json
 
 # ---- Build outputs ----
 dist/
